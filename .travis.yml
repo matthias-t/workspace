@@ -8,7 +8,7 @@ before_script:
   - >
     [ "$TRAVIS_RUST_VERSION" != "nightly" ] || rustup component add rustfmt-preview
   - >
-    [ "$TRAVIS_RUST_VERSION" != "nightly" ] || cargo install clippy || echo "clippy failed to install"
+    [ "$TRAVIS_RUST_VERSION" != "nightly" ] || cargo install --force clippy || echo "clippy failed to install"
 script:
   - >
     [ "$TRAVIS_RUST_VERSION" != "nightly" ] || cargo fmt -- --check
