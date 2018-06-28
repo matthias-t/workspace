@@ -4,21 +4,20 @@ rust:
   - stable
   - beta
   - nightly
-before_script:
-  - >
-    [ "$TRAVIS_RUST_VERSION" != "stable" ] || rustup toolchain install nightly-2018-06-18
-  - >
-    [ "$TRAVIS_RUST_VERSION" != "stable" ] || rustup component add rustfmt-preview --toolchain nightly-2018-06-18
-  - >
-    [ "$TRAVIS_RUST_VERSION" != "stable" ] || cargo +nightly-2018-06-18 install clippy || echo "clippy failed to install or already installed"
 script:
-  - >
-    [ "$TRAVIS_RUST_VERSION" != "stable" ] || cargo +nightly-2018-06-18 fmt -- --check
-  - >
-    [ "$TRAVIS_RUST_VERSION" != "stable" ] || ! cargo +nightly-2018-06-18 clippy --version || cargo +nightly-2018-06-18 clippy -- -D clippy
   - cargo build --verbose
   - cargo test --verbose
 matrix:
   fast_finish: true
   allow_failures:
     - rust: nightly
+  include:
+    - rust: nightly-2018-06-18
+      env:
+        - CLIPPY_VERSION=0.0.208
+      before_script:
+        - rustup component add rustfmt-preview
+        - cargo install clippy --version $CLIPPY_VERSION || echo "clippy already installed"
+      script:
+        - cargo fmt -- --check
+        - cargo clippy -- -D clippy
