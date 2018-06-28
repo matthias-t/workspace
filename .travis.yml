@@ -6,14 +6,16 @@ rust:
   - nightly
 before_script:
   - >
-    [ "$TRAVIS_RUST_VERSION" != "nightly" ] || rustup component add rustfmt-preview
+    [ "$TRAVIS_RUST_VERSION" != "stable" ] || rustup toolchain install nightly-2018-06-18
   - >
-    [ "$TRAVIS_RUST_VERSION" != "nightly" ] || cargo install --force clippy || echo "clippy failed to install"
+    [ "$TRAVIS_RUST_VERSION" != "stable" ] || rustup component add rustfmt-preview --toolchain nightly-2018-06-18
+  - >
+    [ "$TRAVIS_RUST_VERSION" != "stable" ] || cargo +nightly-2018-06-18 install clippy || echo "clippy failed to install or already installed"
 script:
   - >
-    [ "$TRAVIS_RUST_VERSION" != "nightly" ] || cargo fmt -- --check
+    [ "$TRAVIS_RUST_VERSION" != "stable" ] || cargo +nightly-2018-06-18 fmt -- --check
   - >
-    [ "$TRAVIS_RUST_VERSION" != "nightly" ] || ! cargo clippy --version || cargo clippy -- -D clippy
+    [ "$TRAVIS_RUST_VERSION" != "stable" ] || ! cargo +nightly-2018-06-18 clippy --version || cargo +nightly-2018-06-18 clippy -- -D clippy
   - cargo build --verbose
   - cargo test --verbose
 matrix:
