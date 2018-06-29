@@ -1,3 +1,4 @@
+mod shell;
 mod workspace;
 
 #[macro_use]
@@ -5,9 +6,13 @@ extern crate serde_derive;
 extern crate clap;
 extern crate colored;
 
-use clap::{App, Arg, ArgMatches, SubCommand};
+use clap::*;
 use colored::*;
 use std::env;
+use std::fs;
+use std::io::Write;
+use std::path;
+use std::process;
 use workspace::Workspace;
 
 fn main() {
@@ -38,6 +43,35 @@ fn main() {
                 .alias("ls")
                 .about("Lists all existing workspaces"),
         )
+        .subcommand({
+            SubCommand::with_name("shell")
+                .about("Sets up workspace in your shell")
+                .setting(AppSettings::ArgRequiredElseHelp)
+                .subcommand(
+                    SubCommand::with_name("bash")
+                        .about("Returns a bash function to source in your bashrc")
+                        .long_about(
+                            "Returns a bash function to source in your bashrc with \nsource <(workspace shell bash)"
+                        ),
+                )
+                .subcommand(
+                    SubCommand::with_name("powershell")
+                        .alias("PowerShell")
+                        .alias("posh")
+                        .about("Returns a PowerShell function to source in your shell profile")
+                        .long_about(
+                            "Returns a PowerShell function to source in your shell profile with \nInvoke-Expression \"$(workspace shell powershell)\""
+                        ),
+                )
+                .subcommand(
+                    SubCommand::with_name("cmd")
+                        .about("Creates a cmd batch file")
+                        .long_about(
+                            "Creates a cmd batch file. Unless PATH is specified, it will be created in the same folder as the workspace binary",
+                        )
+                        .arg(Arg::with_name("PATH")),
+                )
+        })
         .get_matches();
 
     if let Some(matches) = matches.subcommand_matches("new") {
@@ -46,6 +80,8 @@ fn main() {
         delete(matches);
     } else if let Some(_matches) = matches.subcommand_matches("list") {
         list();
+    } else if let Some(matches) = matches.subcommand_matches("shell") {
+        shell(matches);
     }
 }
 
@@ -69,7 +105,7 @@ fn delete(matches: &ArgMatches) {
     };
     if !ws.exists() {
         eprintln!("ERROR: A workspace called '{}' does not exist", ws.name);
-        std::process::exit(1);
+        process::exit(1);
     }
     ws.delete();
     println!("Deleted workspace '{}' in {}", ws.name, ws.path.display());
@@ -89,5 +125,49 @@ fn list() {
             ws.name,
             ws.path.display().to_string().bright_black()
         );
+    }
+}
+
+fn shell(matches: &ArgMatches) {
+    if matches.subcommand_matches("bash").is_some() {
+        println!("{}", shell::BASH);
+    } else if matches.subcommand_matches("powershell").is_some() {
+        println!("{}", shell::POWERSHELL)
+    } else if let Some(matches) = matches.subcommand_matches("cmd") {
+        let mut path: path::PathBuf = path_to_binary_or_arg(&matches);
+        let mut file: fs::File = fs::OpenOptions::new()
+            .read(false)
+            .write(true)
+            .create(true)
+            .append(false)
+            .truncate(true)
+            .open(&path)
+            .unwrap_or_else(|_| {
+                eprintln!("ERROR: Could not create batch file at {}", path.display());
+                process::exit(1);
+            });
+
+        file.write_fmt(format_args!("{}", shell::CMD))
+            .expect("Could not write to batch file");
+
+        println!("Wrote {}", path.display());
+    }
+}
+
+fn path_to_binary_or_arg(matches: &ArgMatches) -> path::PathBuf {
+    if let Some(path) = matches.value_of("PATH") {
+        return path::Path::new(path)
+            .with_file_name("ws")
+            .with_extension("bat")
+            .to_path_buf();
+    } else {
+        let mut path = env::current_exe().unwrap_or_else(|_| {
+            eprintln!("ERROR: Could not determine path to binary");
+            println!("Try providing a PATH");
+            process::exit(1);
+        });
+        path.set_file_name("ws");
+        path.set_extension("bat");
+        return path;
     }
 }
