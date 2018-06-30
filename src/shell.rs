@@ -1,9 +1,9 @@
 pub const BASH: &str = "function ws {
     while read -r line; do
-        if [[ \"$line\" == \"RUN>*\" ]]; then
-            source <(echo \"${line:4}\");
+        if [[ $line == RUN\\>* ]]; then
+            eval ${line:4};
         else
-            echo \"$line\";
+            echo $line;
         fi;
     done < <( workspace \"$@\" );
 }";
