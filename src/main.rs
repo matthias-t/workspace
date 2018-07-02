@@ -118,11 +118,13 @@ fn list() {
         println!("No existing workspaces.\nRun `workspace new <NAME>` to create one.");
         return;
     }
-
+    
+    let l = (*all).iter().max_by(|ws1, ws2| ws1.name.len().cmp(&mut ws2.name.len())).unwrap().name.len();
     for ws in all {
         println!(
-            "{}  {}",
+            "{0:<1$}  {2}",
             ws.name,
+            l,
             ws.path.display().to_string().bright_black()
         );
     }
