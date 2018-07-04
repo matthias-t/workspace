@@ -83,9 +83,6 @@ fn main() {
         list();
     } else if let Some(matches) = matches.subcommand_matches("shell") {
         shell(matches);
-    } else {
-        println!("not one of those...");
-
     }
 }
 
