@@ -20,7 +20,8 @@ fn main() {
         .version("0.0.0")
         .about("Manages workspaces for all your projects!")
         .author("Matthias T. and Roma B.")
-        .settings(&[AppSettings::ArgRequiredElseHelp, AppSettings::ColoredHelp])
+        .setting(AppSettings::ArgRequiredElseHelp)
+        .global_setting(AppSettings::ColoredHelp)
         .subcommand(
             SubCommand::with_name("new")
                 .about("Creates a new workspace in this directory")
