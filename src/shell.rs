@@ -3,7 +3,7 @@ pub const BASH: &str = "function ws {
         if [[ $line == RUN\\>* ]]; then
             eval ${line:4};
         else
-            echo $line;
+            echo \"$line\";
         fi;
     done < <( workspace \"$@\" );
 }";
