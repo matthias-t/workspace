@@ -1,3 +1,5 @@
+#[macro_use]
+pub mod macros;
 mod shell;
 mod workspace;
 
@@ -22,6 +24,15 @@ fn main() {
         .author("Matthias T. and Roma B.")
         .setting(AppSettings::ArgRequiredElseHelp)
         .global_setting(AppSettings::ColoredHelp)
+        .subcommand(
+            SubCommand::with_name("open")
+                .about("Opens a workspace")
+                .arg(
+                    Arg::with_name("NAME")
+                        .help("Name of the workspace to open")
+                        .required(true),
+                ),
+        )
         .subcommand(
             SubCommand::with_name("new")
                 .about("Creates a new workspace in this directory")
@@ -76,7 +87,9 @@ fn main() {
         })
         .get_matches();
 
-    if let Some(matches) = matches.subcommand_matches("new") {
+    if let Some(matches) = matches.subcommand_matches("open") {
+        open(matches);
+    } else if let Some(matches) = matches.subcommand_matches("new") {
         new(matches);
     } else if let Some(matches) = matches.subcommand_matches("delete") {
         delete(matches);
@@ -85,6 +98,15 @@ fn main() {
     } else if let Some(matches) = matches.subcommand_matches("shell") {
         shell(matches);
     }
+}
+
+fn open(matches: &ArgMatches) {
+    let name: &str = matches.value_of("NAME").unwrap();
+    let ws: Workspace = workspace::get(name).unwrap_or_else(|| {
+        eprintln!("ERROR: A workspace called '{}' does not exist", name);
+        std::process::exit(1);
+    });
+    ws.cd();
 }
 
 fn new(matches: &ArgMatches) {

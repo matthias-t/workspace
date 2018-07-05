@@ -41,6 +41,10 @@ impl Workspace {
         self.data_path().exists()
     }
 
+    pub fn cd(&self) {
+        run!("cd {}", self.path.display());
+    }
+
     fn data_path(&self) -> PathBuf {
         let mut path = data_path();
         path.push(&self.name);
