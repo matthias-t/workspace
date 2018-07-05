@@ -50,6 +50,21 @@ impl Workspace {
     }
 }
 
+pub fn get(name: &str) -> Option<Workspace> {
+    paths()
+        .into_iter()
+        .filter(|path| {
+            let file_stem = path.file_stem();
+            if file_stem.is_none() {
+                return false;
+            }
+            file_stem.unwrap().to_string_lossy() == name
+        })
+        .map(read)
+        .map(parse)
+        .nth(0)
+}
+
 pub fn all() -> Vec<Workspace> {
     files().into_iter().map(parse).collect()
 }
