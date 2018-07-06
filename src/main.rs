@@ -34,7 +34,8 @@ fn main() {
                 ),
         )
         .subcommand(
-            SubCommand::with_name("new")
+            SubCommand::with_name("add")
+                .alias("new")
                 .about("Creates a new workspace in this directory")
                 .arg(
                     Arg::with_name("NAME")
@@ -89,8 +90,8 @@ fn main() {
 
     if let Some(matches) = matches.subcommand_matches("open") {
         open(matches);
-    } else if let Some(matches) = matches.subcommand_matches("new") {
-        new(matches);
+    } else if let Some(matches) = matches.subcommand_matches("add") {
+        add(matches);
     } else if let Some(matches) = matches.subcommand_matches("delete") {
         delete(matches);
     } else if let Some(_matches) = matches.subcommand_matches("list") {
@@ -109,7 +110,7 @@ fn open(matches: &ArgMatches) {
     ws.cd();
 }
 
-fn new(matches: &ArgMatches) {
+fn add(matches: &ArgMatches) {
     let ws = Workspace {
         name: matches.value_of("NAME").unwrap().to_string(),
         path: env::current_dir().expect("ERROR: Could not read current directory"),
@@ -119,7 +120,7 @@ fn new(matches: &ArgMatches) {
         std::process::exit(1);
     }
     ws.write();
-    println!("Created workspace '{}' in {}", ws.name, ws.path.display());
+    println!("Added workspace '{}' in {}", ws.name, ws.path.display());
 }
 
 fn delete(matches: &ArgMatches) {
@@ -139,7 +140,7 @@ fn list() {
     let all = workspace::all();
 
     if all.is_empty() {
-        println!("No existing workspaces.\nRun `workspace new <NAME>` to create one.");
+        println!("No existing workspaces.\nRun `workspace add <NAME>` to create one.");
         return;
     }
 
