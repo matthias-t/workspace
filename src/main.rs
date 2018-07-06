@@ -17,6 +17,8 @@ use std::path;
 use std::process;
 use workspace::Workspace;
 
+pub static mut VERBOSE: bool = false;
+
 fn main() {
     let matches = App::new("workspace")
         .version("0.0.0")
@@ -24,6 +26,12 @@ fn main() {
         .author("Matthias T. and Roma B.")
         .setting(AppSettings::ArgRequiredElseHelp)
         .global_setting(AppSettings::ColoredHelp)
+        .arg(
+            Arg::with_name("verbose")
+                .long("verbose")
+                .short("v")
+                .help("Causes verbose output to be logged"),
+        )
         .subcommand(
             SubCommand::with_name("open")
                 .about("Opens a workspace")
@@ -86,6 +94,10 @@ fn main() {
                 )
         })
         .get_matches();
+
+    unsafe {
+        VERBOSE = matches.is_present("verbose");
+    }
 
     if let Some(matches) = matches.subcommand_matches("open") {
         open(matches);
