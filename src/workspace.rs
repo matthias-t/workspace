@@ -2,6 +2,8 @@ extern crate serde;
 extern crate serde_yaml;
 
 use super::exit::Exit;
+use super::VERBOSE;
+use colored::*;
 use std::env;
 use std::fs;
 use std::io::{Read, Write};
@@ -100,27 +102,29 @@ pub fn paths() -> Vec<PathBuf> {
     let mut paths: Vec<PathBuf> = Vec::new();
 
     for entry in entries {
-        if entry.is_err() {
-            continue;
-        }
+        skip_err!(entry);
         let entry = entry.unwrap();
-
-        if entry.file_type().is_err() {
-            continue;
-        }
-        let file_type = entry.file_type().unwrap();
-        if !file_type.is_file() {
-            continue;
-        }
-
         let path = entry.path();
-        if path.extension().is_none() {
-            continue;
-        }
+
+        skip_err!(entry.file_type());
+        let file_type = entry.file_type().unwrap();
+        skip!(
+            !file_type.is_file(),
+            format!("Skipping {} because it's not a file", path.display())
+        );
+
+        skip_none!(
+            path.extension(),
+            format!(
+                "Skipping {} because it has no file extension",
+                path.display()
+            )
+        );
         let extension = path.extension().unwrap();
-        if extension.to_string_lossy() != "yaml" {
-            continue;
-        }
+        skip!(
+            extension.to_string_lossy() != "yaml",
+            format!("Skipping {} because it's not a YAML file", path.display())
+        );
 
         paths.push(entry.path());
     }

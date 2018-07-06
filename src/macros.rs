@@ -25,3 +25,32 @@ macro_rules! log {
         }
     };
 }
+
+macro_rules! skip {
+    ($condition:expr) => {
+        if $condition {
+            continue;
+        }
+    };
+    ($condition:expr, $message:expr) => {
+        if $condition {
+            log!("{}", $message);
+            continue;
+        }
+    };
+}
+
+macro_rules! skip_err {
+    ($result:expr) => {
+        skip!($result.is_err(), $result.unwrap_err());
+    };
+}
+
+macro_rules! skip_none {
+    ($option:expr) => {
+        skip!($option.is_none());
+    };
+    ($option:expr, $message:expr) => {
+        skip!($option.is_none(), $message);
+    };
+}
