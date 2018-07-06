@@ -1,6 +1,7 @@
 extern crate serde;
 extern crate serde_yaml;
 
+use super::exit::Exit;
 use std::env;
 use std::fs;
 use std::io::{Read, Write};
@@ -14,7 +15,7 @@ pub struct Workspace {
 
 impl Workspace {
     pub fn write(&self) -> &Self {
-        const ERR_MESSAGE: &str = "ERROR: Could not write workspace data";
+        const ERR_MESSAGE: &str = "Could not write workspace data";
 
         let path = self.data_path();
         let mut file = fs::OpenOptions::new()
@@ -22,18 +23,18 @@ impl Workspace {
             .write(true)
             .create(true)
             .open(path)
-            .expect(ERR_MESSAGE);
+            .unwrap_or_exit(ERR_MESSAGE);
 
         let serialized = serde_yaml::to_string(self).unwrap();
         file.write_fmt(format_args!("{}", serialized))
-            .expect(ERR_MESSAGE);
+            .unwrap_or_exit(ERR_MESSAGE);
 
         self
     }
 
     pub fn delete(&self) -> &Self {
         let path = self.data_path();
-        fs::remove_file(path).expect("ERROR: Could not delete workspace data");
+        fs::remove_file(path).unwrap_or_exit("Could not delete workspace data");
         self
     }
 
@@ -74,12 +75,13 @@ pub fn all() -> Vec<Workspace> {
 }
 
 pub fn parse(mut file: fs::File) -> Workspace {
-    const ERR_MESSAGE: &str = "ERROR: could not read workspace data";
+    const ERR_MESSAGE: &str = "Could not read workspace data";
 
     let mut content = String::new();
-    file.read_to_string(&mut content).expect(ERR_MESSAGE);
+    file.read_to_string(&mut content)
+        .unwrap_or_exit(ERR_MESSAGE);
 
-    serde_yaml::from_str(&content).expect(ERR_MESSAGE)
+    serde_yaml::from_str(&content).unwrap_or_exit(ERR_MESSAGE)
 }
 
 pub fn files() -> Vec<fs::File> {
@@ -90,11 +92,11 @@ pub fn read(path: PathBuf) -> fs::File {
     fs::OpenOptions::new()
         .read(true)
         .open(path)
-        .expect("ERROR: could not get workspace data")
+        .unwrap_or_exit("Could not get workspace data")
 }
 
 pub fn paths() -> Vec<PathBuf> {
-    let entries = fs::read_dir(data_path()).expect("ERROR: could not find workspace data");
+    let entries = fs::read_dir(data_path()).unwrap_or_exit("Could not find workspace data");
     let mut paths: Vec<PathBuf> = Vec::new();
 
     for entry in entries {
@@ -127,12 +129,12 @@ pub fn paths() -> Vec<PathBuf> {
 }
 
 pub fn data_path() -> PathBuf {
-    let mut path = env::home_dir().expect("ERROR: Could not find home directory");
+    let mut path = env::home_dir().unwrap_or_exit("Could not find home directory");
     path.push(".workspace");
 
     if !path.exists() {
         fs::create_dir(&path)
-            .unwrap_or_else(|_| panic!("ERROR: Could not create directory {}", path.display()))
+            .unwrap_or_exit(&format!("Could not create directory {}", path.display()));
     }
 
     path

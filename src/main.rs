@@ -1,5 +1,6 @@
 #[macro_use]
 pub mod macros;
+pub mod exit;
 mod shell;
 mod workspace;
 
@@ -10,6 +11,7 @@ extern crate colored;
 
 use clap::*;
 use colored::*;
+use exit::*;
 use std::env;
 use std::fs;
 use std::io::Write;
@@ -114,21 +116,19 @@ fn main() {
 
 fn open(matches: &ArgMatches) {
     let name: &str = matches.value_of("NAME").unwrap();
-    let ws: Workspace = workspace::get(name).unwrap_or_else(|| {
-        eprintln!("ERROR: A workspace called '{}' does not exist", name);
-        std::process::exit(1);
-    });
+    let ws: Workspace = workspace::get(name)
+        .unwrap_or_exit(&format!("A workspace called '{}' does not exist", name));
     ws.cd();
 }
 
 fn new(matches: &ArgMatches) {
     let ws = Workspace {
         name: matches.value_of("NAME").unwrap().to_string(),
-        path: env::current_dir().expect("ERROR: Could not read current directory"),
+        path: env::current_dir().unwrap_or_exit("Could not read current directory"),
     };
     if ws.exists() {
-        eprintln!("ERROR: A workspace called '{}' already exists", ws.name);
-        std::process::exit(1);
+        error!("A workspace called '{}' already exists", ws.name);
+        process::exit(1);
     }
     ws.write();
     println!("Created workspace '{}' in {}", ws.name, ws.path.display());
@@ -137,10 +137,10 @@ fn new(matches: &ArgMatches) {
 fn delete(matches: &ArgMatches) {
     let ws = Workspace {
         name: matches.value_of("NAME").unwrap().to_string(),
-        path: env::current_dir().expect("ERROR: Could not read current directory"),
+        path: env::current_dir().unwrap_or_exit("Could not read current directory"),
     };
     if !ws.exists() {
-        eprintln!("ERROR: A workspace called '{}' does not exist", ws.name);
+        error!("A workspace called '{}' does not exist", ws.name);
         process::exit(1);
     }
     ws.delete();
@@ -180,13 +180,13 @@ fn shell(matches: &ArgMatches) {
             .append(false)
             .truncate(true)
             .open(&path)
-            .unwrap_or_else(|_| {
-                eprintln!("ERROR: Could not create batch file at {}", path.display());
-                process::exit(1);
-            });
+            .unwrap_or_exit(&format!(
+                "Could not create batch file at {}",
+                path.display()
+            ));
 
         file.write_fmt(format_args!("{}", shell::CMD))
-            .expect("Could not write to batch file");
+            .unwrap_or_exit("Could not write to batch file");
 
         println!("Wrote {}", path.display());
     }
@@ -199,11 +199,7 @@ fn path_to_binary_or_arg(matches: &ArgMatches) -> path::PathBuf {
             .with_extension("bat")
             .to_path_buf();
     } else {
-        let mut path = env::current_exe().unwrap_or_else(|_| {
-            eprintln!("ERROR: Could not determine path to binary");
-            println!("Try providing a PATH");
-            process::exit(1);
-        });
+        let mut path = env::current_exe().unwrap_or_exit("Could not determine path to binary");
         path.set_file_name("ws");
         path.set_extension("bat");
         return path;
