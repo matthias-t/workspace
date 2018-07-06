@@ -120,7 +120,7 @@ fn add(matches: &ArgMatches) {
         std::process::exit(1);
     }
     ws.write();
-    println!("Added workspace '{}' in {}", ws.name, ws.path.display());
+    println!("Created workspace '{}' in {}", ws.name, ws.path.display());
 }
 
 fn delete(matches: &ArgMatches) {
