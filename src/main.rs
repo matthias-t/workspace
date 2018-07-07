@@ -14,7 +14,7 @@ use colored::*;
 use exit::*;
 use std::env;
 use std::fs;
-use std::io::Write;
+use std::io::{self, Write};
 use std::path;
 use std::process;
 use workspace::Workspace;
@@ -60,6 +60,12 @@ fn main() {
                     Arg::with_name("NAME")
                         .help("Name of the workspace to delete")
                         .required(true),
+                )
+                .arg(
+                    Arg::with_name("yes")
+                        .long("yes")
+                        .short("y")
+                        .help("Skips confirmation prompt"),
                 ),
         )
         .subcommand(
@@ -140,10 +146,16 @@ fn delete(matches: &ArgMatches) {
         name: matches.value_of("NAME").unwrap().to_string(),
         path: env::current_dir().unwrap_or_exit("Could not read current directory"),
     };
+
     if !ws.exists() {
         error!("A workspace called '{}' does not exist", ws.name);
         process::exit(1);
     }
+
+    if !matches.is_present("yes") {
+        confirm!("delete the workspace '{}'", ws.name);
+    }
+
     ws.delete();
     println!("Deleted workspace '{}' in {}", ws.name, ws.path.display());
 }
