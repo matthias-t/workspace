@@ -54,3 +54,24 @@ macro_rules! skip_none {
         skip!($option.is_none(), $message);
     };
 }
+
+macro_rules! confirm {
+    ($action:expr$(,$arg:expr)*) => {
+        loop {
+            warn!(concat!("Are you certain you wish to ", $action, "? [y/n]")$(,$arg)*);
+            let mut response = String::new();
+            io::stdin()
+                .read_line(&mut response)
+                .unwrap_or_exit("Could not read line");
+            response = response.to_lowercase();
+            let response: &str = response.trim();
+            if response == "y" || response == "yes" {
+                break;
+            }
+            if response == "n" || response == "no" {
+                println!("Aborting");
+                return;
+            }
+        }
+    };
+}
