@@ -174,12 +174,22 @@ fn list() {
     }
 
     let longest_name_length = (*all).iter().map(|ws| ws.name.len()).fold(0, std::cmp::max);
+    let longest_path_length = (*all)
+        .iter()
+        .map(|ws| ws.path.display().to_string().len())
+        .fold(0, std::cmp::max);
     for ws in all {
         println!(
-            "{0:<1$}  {2}",
+            "{0:<1$}  {2:<3$}{4}",
             ws.name,
             longest_name_length,
-            ws.path.display().to_string().bright_black()
+            ws.path.display().to_string().bright_black(),
+            longest_path_length,
+            if !ws.path.exists() {
+                format!("  {} path has moved", "warning:".bold().yellow())
+            } else {
+                String::default()
+            }
         );
     }
 }
