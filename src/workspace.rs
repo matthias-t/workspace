@@ -1,5 +1,5 @@
 extern crate serde;
-extern crate serde_yaml;
+extern crate toml;
 
 use super::exit::Exit;
 use super::VERBOSE;
@@ -27,7 +27,7 @@ impl Workspace {
             .open(path)
             .unwrap_or_exit(ERR_MESSAGE);
 
-        let serialized = serde_yaml::to_string(self).unwrap();
+        let serialized = toml::to_string(self).unwrap();
         file.write_fmt(format_args!("{}", serialized))
             .unwrap_or_exit(ERR_MESSAGE);
 
@@ -51,7 +51,7 @@ impl Workspace {
     fn data_path(&self) -> PathBuf {
         let mut path = data_path();
         path.push(&self.name);
-        path.set_extension("yaml");
+        path.set_extension("toml");
 
         path
     }
@@ -83,7 +83,7 @@ pub fn parse(mut file: fs::File) -> Workspace {
     file.read_to_string(&mut content)
         .unwrap_or_exit(ERR_MESSAGE);
 
-    serde_yaml::from_str(&content).unwrap_or_exit(ERR_MESSAGE)
+    toml::from_str(&content).unwrap_or_exit(ERR_MESSAGE)
 }
 
 pub fn files() -> Vec<fs::File> {
@@ -122,8 +122,8 @@ pub fn paths() -> Vec<PathBuf> {
         );
         let extension = path.extension().unwrap();
         skip!(
-            extension.to_string_lossy() != "yaml",
-            format!("Skipping {} because it's not a YAML file", path.display())
+            extension.to_string_lossy() != "toml",
+            format!("Skipping {} because it's not a TOML file", path.display())
         );
 
         paths.push(entry.path());
