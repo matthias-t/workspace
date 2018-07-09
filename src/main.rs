@@ -68,15 +68,9 @@ fn add(matches: &ArgMatches) {
 }
 
 fn delete(matches: &ArgMatches) {
-    let ws = Workspace {
-        name: matches.value_of("NAME").unwrap().to_string(),
-        path: env::current_dir().unwrap_or_exit("Could not read current directory"),
-    };
-
-    if !ws.exists() {
-        error!("A workspace called '{}' does not exist", ws.name);
-        process::exit(1);
-    }
+    let name: &str = matches.value_of("NAME").unwrap();
+    let ws: Workspace = workspace::get(name)
+        .unwrap_or_exit(&format!("A workspace called '{}' does not exist", name));
 
     if !matches.is_present("yes") {
         confirm!("delete the workspace '{}'", ws.name);
