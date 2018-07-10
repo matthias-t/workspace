@@ -4,18 +4,21 @@ macro_rules! run {
     };
 }
 
+// Dependencies: colored::Colorize
 macro_rules! error {
     ($message:expr$(,$arg:expr)*) => {
         eprintln!(concat!("{} ", $message), "error:".red().bold()$(, $arg)*);
     };
 }
 
+// Dependencies: colored::Colorize
 macro_rules! warn {
     ($message:expr$(,$arg:expr)*) => {
         println!(concat!("{} ", $message), "warning:".yellow().bold()$(, $arg)*);
     };
 }
 
+// Dependencies: VERBOSE: bool, colored::Colorize
 macro_rules! log {
     ($message:expr$(,$arg:expr)*) => {
         unsafe {
@@ -26,6 +29,7 @@ macro_rules! log {
     };
 }
 
+// Dependencies: log!
 macro_rules! skip {
     ($condition:expr) => {
         if $condition {
@@ -40,12 +44,14 @@ macro_rules! skip {
     };
 }
 
+// Dependencies: skip!
 macro_rules! skip_err {
     ($result:expr) => {
         skip!($result.is_err(), $result.unwrap_err());
     };
 }
 
+// Dependencies: skip!
 macro_rules! skip_none {
     ($option:expr) => {
         skip!($option.is_none());
@@ -55,6 +61,7 @@ macro_rules! skip_none {
     };
 }
 
+// Dependencies: std::io, warn!, Exit (src/exit.rs)
 macro_rules! confirm {
     ($action:expr$(,$arg:expr)*) => {
         loop {
