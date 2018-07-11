@@ -6,7 +6,7 @@ use super::VERBOSE;
 use colored::*;
 use std::env;
 use std::fs;
-use std::io::{Read, Write};
+use std::io::{self, Read, Write};
 use std::path::PathBuf;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -71,11 +71,15 @@ pub fn files() -> Vec<fs::File> {
     paths().into_iter().map(read).collect()
 }
 
-pub fn read(path: PathBuf) -> fs::File {
+fn read(path: PathBuf) -> io::Result<String> {
+    let mut content: String = String::new();
+
     fs::OpenOptions::new()
         .read(true)
-        .open(path)
-        .unwrap_or_exit("Could not get workspace data")
+        .open(path)?
+        .read_to_string(&mut content)?;
+
+    Ok(content)
 }
 
 fn paths() -> Vec<PathBuf> {
