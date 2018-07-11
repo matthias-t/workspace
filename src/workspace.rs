@@ -19,7 +19,7 @@ impl Workspace {
     pub fn write(&self) -> &Self {
         const ERR_MESSAGE: &str = "Could not write workspace data";
 
-        let path = self.data_path();
+        let path = file_path(&self.name);
         let mut file = fs::OpenOptions::new()
             .read(false)
             .write(true)
@@ -35,41 +35,22 @@ impl Workspace {
     }
 
     pub fn delete(&self) -> &Self {
-        let path = self.data_path();
+        let path = file_path(&self.name);
         fs::remove_file(path).unwrap_or_exit("Could not delete workspace data");
         self
     }
 
     pub fn exists(&self) -> bool {
-        self.data_path().exists()
+        file_path(&self.name).exists()
     }
 
     pub fn cd(&self) {
         run!("cd {}", self.path.display());
     }
-
-    fn data_path(&self) -> PathBuf {
-        let mut path = data_path();
-        path.push(&self.name);
-        path.set_extension("toml");
-
-        path
-    }
 }
 
-pub fn get(name: &str) -> Option<Workspace> {
-    paths()
-        .into_iter()
-        .filter(|path| {
-            let file_stem = path.file_stem();
-            if file_stem.is_none() {
-                return false;
-            }
-            file_stem.unwrap().to_string_lossy() == name
-        })
-        .map(read)
-        .map(parse)
-        .nth(0)
+pub fn get(name: &str) -> Workspace {
+    parse(read(file_path(name)))
 }
 
 pub fn all() -> Vec<Workspace> {
@@ -97,8 +78,8 @@ pub fn read(path: PathBuf) -> fs::File {
         .unwrap_or_exit("Could not get workspace data")
 }
 
-pub fn paths() -> Vec<PathBuf> {
-    let entries = fs::read_dir(data_path()).unwrap_or_exit("Could not find workspace data");
+fn paths() -> Vec<PathBuf> {
+    let entries = fs::read_dir(folder_path()).unwrap_or_exit("Could not find workspace data");
     let mut paths: Vec<PathBuf> = Vec::new();
 
     for entry in entries {
@@ -132,7 +113,11 @@ pub fn paths() -> Vec<PathBuf> {
     paths
 }
 
-pub fn data_path() -> PathBuf {
+fn file_path(name: &str) -> PathBuf {
+    folder_path().with_file_name(name).with_extension("toml")
+}
+
+fn folder_path() -> PathBuf {
     let mut path = env::home_dir().unwrap_or_exit("Could not find home directory");
     path.push(".workspace");
 
