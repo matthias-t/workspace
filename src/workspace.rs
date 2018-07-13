@@ -5,6 +5,8 @@ use super::exit::Exit;
 use super::VERBOSE;
 use colored::*;
 use std::env;
+use std::error;
+use std::fmt;
 use std::fs;
 use std::io::{self, Read, Write};
 use std::path::PathBuf;
@@ -131,4 +133,27 @@ fn folder_path() -> PathBuf {
     }
 
     path
+}
+
+#[derive(Debug, Clone)]
+struct Error {
+    name: String,
+    description: &'static str,
+    cause: Option<&'static error::Error>,
+}
+
+impl fmt::Display for Error {
+    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+        use std::error::Error;
+        write!(formatter, "{}", self.description())
+    }
+}
+
+impl error::Error for Error {
+    fn description(&self) -> &str {
+        self.description
+    }
+    fn cause(&self) -> Option<&error::Error> {
+        self.cause
+    }
 }
