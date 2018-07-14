@@ -7,6 +7,8 @@ mod workspace;
 
 #[macro_use]
 extern crate serde_derive;
+#[macro_use]
+extern crate failure;
 extern crate clap;
 extern crate colored;
 

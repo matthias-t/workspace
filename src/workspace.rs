@@ -4,9 +4,8 @@ extern crate toml;
 use super::exit::Exit;
 use super::VERBOSE;
 use colored::*;
+use failure::Error;
 use std::env;
-use std::error;
-use std::fmt;
 use std::fs;
 use std::io::{self, Read, Write};
 use std::path::PathBuf;
@@ -51,26 +50,34 @@ impl Workspace {
     }
 }
 
-pub fn get(name: &str) -> Workspace {
-    parse(read(file_path(name)))
+pub fn get(name: &str) -> Result<Workspace, Error> {
+    parse(file_path(name))
 }
 
-pub fn all() -> Vec<Workspace> {
-    files().into_iter().map(parse).collect()
+pub fn all() -> Vec<(String, Result<Workspace, Error>)> {
+    paths()
+        .into_iter()
+        .map(|path| {
+            // Safe to unwrap here, because paths() cannot contain a file without a stem
+            let name = path
+                .file_stem()
+                .unwrap()
+                .to_str()
+                .map(|slice| slice.to_string())
+                .unwrap_or(format!(
+                    "{} workspace name is invalid UTF-8",
+                    "warning:".bold().yellow()
+                ));
+            (name, path)
+        })
+        .map(|(name, path)| (name, parse(path)))
+        .collect()
 }
 
-pub fn parse(mut file: fs::File) -> Workspace {
-    const ERR_MESSAGE: &str = "Could not read workspace data";
-
-    let mut content = String::new();
-    file.read_to_string(&mut content)
-        .unwrap_or_exit(ERR_MESSAGE);
-
-    toml::from_str(&content).unwrap_or_exit(ERR_MESSAGE)
-}
-
-pub fn files() -> Vec<fs::File> {
-    paths().into_iter().map(read).collect()
+fn parse(path: PathBuf) -> Result<Workspace, Error> {
+    let content: String = read(path)?;
+    let ws: Workspace = toml::from_str(&content)?;
+    Ok(ws)
 }
 
 fn read(path: PathBuf) -> io::Result<String> {
@@ -133,27 +140,4 @@ fn folder_path() -> PathBuf {
     }
 
     path
-}
-
-#[derive(Debug, Clone)]
-struct Error {
-    name: String,
-    description: &'static str,
-    cause: Option<&'static error::Error>,
-}
-
-impl fmt::Display for Error {
-    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-        use std::error::Error;
-        write!(formatter, "{}", self.description())
-    }
-}
-
-impl error::Error for Error {
-    fn description(&self) -> &str {
-        self.description
-    }
-    fn cause(&self) -> Option<&error::Error> {
-        self.cause
-    }
 }
