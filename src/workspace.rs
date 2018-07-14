@@ -12,42 +12,38 @@ use std::path::PathBuf;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Workspace {
-    pub name: String,
     pub path: PathBuf,
 }
 
 impl Workspace {
-    pub fn write(&self) -> &Self {
-        const ERR_MESSAGE: &str = "Could not write workspace data";
-
-        let path = file_path(&self.name);
-        let mut file = fs::OpenOptions::new()
-            .read(false)
-            .write(true)
-            .create(true)
-            .open(path)
-            .unwrap_or_exit(ERR_MESSAGE);
-
-        let serialized = toml::to_string(self).unwrap();
-        file.write_fmt(format_args!("{}", serialized))
-            .unwrap_or_exit(ERR_MESSAGE);
-
-        self
-    }
-
-    pub fn delete(&self) -> &Self {
-        let path = file_path(&self.name);
-        fs::remove_file(path).unwrap_or_exit("Could not delete workspace data");
-        self
-    }
-
-    pub fn exists(&self) -> bool {
-        file_path(&self.name).exists()
-    }
-
-    pub fn cd(&self) {
+    pub fn open(&self) {
         run!("cd {}", self.path.display());
     }
+}
+
+pub fn write(ws: Workspace, name: &str) {
+    const ERR_MESSAGE: &str = "Could not write workspace data";
+
+    let path = file_path(name);
+    let mut file = fs::OpenOptions::new()
+        .read(false)
+        .write(true)
+        .create(true)
+        .open(path)
+        .unwrap_or_exit(ERR_MESSAGE);
+
+    let serialized = toml::to_string(&ws).unwrap();
+    file.write_fmt(format_args!("{}", serialized))
+        .unwrap_or_exit(ERR_MESSAGE);
+}
+
+pub fn delete(name: &str) {
+    let path = file_path(name);
+    fs::remove_file(path).unwrap_or_exit("Could not delete workspace data");
+}
+
+pub fn exists(name: &str) -> bool {
+    file_path(name).exists()
 }
 
 pub fn get(name: &str) -> Result<Workspace, Error> {

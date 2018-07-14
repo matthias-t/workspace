@@ -53,20 +53,20 @@ fn open(matches: &ArgMatches) {
         println!("The path '{}' was moved or deleted", ws.path.display());
         process::exit(1);
     }
-    ws.cd();
+    ws.open();
 }
 
 fn add(matches: &ArgMatches) {
-    let ws = Workspace {
-        name: matches.value_of("NAME").unwrap().to_string(),
-        path: env::current_dir().unwrap_or_exit("Could not read current directory"),
-    };
-    if ws.exists() {
-        error!("A workspace called '{}' already exists", ws.name);
+    let name = matches.value_of("NAME").unwrap().to_string();
+    if workspace::exists(&name) {
+        error!("A workspace called '{}' already exists", name);
         process::exit(1);
     }
-    ws.write();
-    println!("Created workspace '{}' in {}", ws.name, ws.path.display());
+    let ws = Workspace {
+        path: env::current_dir().unwrap_or_exit("Could not read current directory"),
+    };
+    workspace::write(ws, &name);
+    println!("Created workspace '{}' in {}", name, ws.path.display());
 }
 
 fn delete(matches: &ArgMatches) {
