@@ -127,7 +127,10 @@ fn paths() -> Vec<PathBuf> {
 }
 
 fn file_path(name: &str) -> PathBuf {
-    folder_path().with_file_name(name).with_extension("toml")
+    let mut path = folder_path();
+    path.push(name);
+    path.set_extension("toml");
+    path
 }
 
 fn folder_path() -> PathBuf {
