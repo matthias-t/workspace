@@ -71,15 +71,13 @@ fn add(matches: &ArgMatches) {
 
 fn delete(matches: &ArgMatches) {
     let name: &str = matches.value_of("NAME").unwrap();
-    let ws: Workspace = workspace::get(name)
-        .unwrap_or_exit(&format!("A workspace called '{}' does not exist", name));
 
     if !matches.is_present("yes") {
-        confirm!("delete the workspace '{}'", ws.name);
+        confirm!("delete the workspace '{}'", name);
     }
 
-    ws.delete();
-    println!("Deleted workspace '{}' in {}", ws.name, ws.path.display());
+    workspace::delete(name);
+    println!("Deleted workspace '{}'", name);
 }
 
 fn list() {
