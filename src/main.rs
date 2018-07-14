@@ -90,23 +90,42 @@ fn list() {
         return;
     }
 
-    let longest_name_length = (*all).iter().map(|ws| ws.name.len()).fold(0, std::cmp::max);
-    let longest_path_length = (*all)
+    let rows: Vec<(&String, String, String)> = all
         .iter()
-        .map(|ws| ws.path.display().to_string().len())
-        .fold(0, std::cmp::max);
-    for ws in all {
+        .map(|(name, result)| {
+            let path: String;
+            let mut moved: String = String::default();
+            match result {
+                Ok(ws) => {
+                    path = ws.path.display().to_string();
+                    if !ws.path.exists() {
+                        moved = format!("  {} path has moved", "warning:".bold().yellow());
+                    }
+                }
+                Err(error) => {
+                    path = format!("{} {}", "warning:".bold().yellow(), error.cause());
+                }
+            }
+            (name, path, moved)
+        })
+        .collect();
+
+    use std::cmp::max;
+    let (longest_name_length, longest_path_length) = rows
+        .iter()
+        .map(|(name, path, _)| (name.len(), path.len()))
+        .fold((0, 0), |(name1, path1), (name2, path2)| {
+            (max(name1, name2), max(path1, path2))
+        });
+
+    for (name, path, moved) in rows {
         println!(
             "{0:<1$}  {2:<3$}{4}",
-            ws.name,
+            name,
             longest_name_length,
-            ws.path.display().to_string().bright_black(),
+            path.bright_black(),
             longest_path_length,
-            if !ws.path.exists() {
-                format!("  {} path has moved", "warning:".bold().yellow())
-            } else {
-                String::default()
-            }
+            moved
         );
     }
 }
