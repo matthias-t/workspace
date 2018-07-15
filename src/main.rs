@@ -5,12 +5,13 @@ pub mod exit;
 mod shell;
 mod workspace;
 
-#[macro_use]
-extern crate serde_derive;
-#[macro_use]
-extern crate failure;
 extern crate clap;
 extern crate colored;
+#[macro_use]
+extern crate failure;
+extern crate prettytable;
+#[macro_use]
+extern crate serde_derive;
 
 use clap::ArgMatches;
 use colored::*;
@@ -82,13 +83,13 @@ fn delete(matches: &ArgMatches) {
 
 fn list() {
     let all = workspace::all();
-
     if all.is_empty() {
         println!("No existing workspaces.\nRun `workspace add <NAME>` to create one.");
         return;
     }
 
-    let rows: Vec<(&String, String, String)> = all
+    use prettytable::{cell::Cell, format, row::Row, Table};
+    let rows: Vec<Row> = all
         .iter()
         .map(|(name, result)| {
             let path: String;
@@ -104,28 +105,12 @@ fn list() {
                     path = format!("{} {}", "warning:".bold().yellow(), error.cause());
                 }
             }
-            (name, path, moved)
+            Row::new(vec![Cell::new(name), Cell::new(&path), Cell::new(&moved)])
         })
         .collect();
-
-    use std::cmp::max;
-    let (longest_name_length, longest_path_length) = rows
-        .iter()
-        .map(|(name, path, _)| (name.len(), path.len()))
-        .fold((0, 0), |(name1, path1), (name2, path2)| {
-            (max(name1, name2), max(path1, path2))
-        });
-
-    for (name, path, moved) in rows {
-        println!(
-            "{0:<1$}  {2:<3$}{4}",
-            name,
-            longest_name_length,
-            path.bright_black(),
-            longest_path_length,
-            moved
-        );
-    }
+    let mut table = Table::init(rows);
+    table.set_format(*format::consts::FORMAT_CLEAN);
+    table.printstd();
 }
 
 fn shell(matches: &ArgMatches) {
