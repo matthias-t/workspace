@@ -92,20 +92,21 @@ fn list() {
     let rows: Vec<Row> = all
         .iter()
         .map(|(name, result)| {
-            let path: String;
-            let mut moved: String = String::default();
+            let path: Cell;
+            let mut moved = Cell::new("");
             match result {
                 Ok(ws) => {
-                    path = ws.path.display().to_string();
+                    path = Cell::new(&ws.path.display().to_string().bright_black().to_string());
                     if !ws.path.exists() {
-                        moved = format!("  {} path has moved", "warning:".bold().yellow());
+                        moved =
+                            Cell::new(&format!("{} path has moved", "warning:".bold().yellow()));
                     }
                 }
                 Err(error) => {
-                    path = format!("{} {}", "warning:".bold().yellow(), error.cause());
+                    path = Cell::new(&format!("{} {}", "warning:".bold().yellow(), error.cause()));
                 }
             }
-            Row::new(vec![Cell::new(name), Cell::new(&path), Cell::new(&moved)])
+            Row::new(vec![Cell::new(name), path, moved])
         })
         .collect();
     let mut table = Table::init(rows);
