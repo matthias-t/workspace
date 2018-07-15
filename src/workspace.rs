@@ -50,7 +50,7 @@ pub fn get(name: &str) -> Result<Workspace, Error> {
     parse(file_path(name))
 }
 
-pub fn all() -> Vec<(String, Result<Workspace, Error>)> {
+pub fn all() -> Vec<(Option<String>, Result<Workspace, Error>)> {
     paths()
         .into_iter()
         .map(|path| {
@@ -59,11 +59,7 @@ pub fn all() -> Vec<(String, Result<Workspace, Error>)> {
                 .file_stem()
                 .unwrap()
                 .to_str()
-                .map(|slice| slice.to_string())
-                .unwrap_or(format!(
-                    "{} workspace name is invalid UTF-8",
-                    "warning:".bold().yellow()
-                ));
+                .map(|slice| slice.to_string());
             (name, path)
         })
         .map(|(name, path)| (name, parse(path)))

@@ -106,7 +106,12 @@ fn list() {
                     path = Cell::new(&format!("{} {}", "warning:".bold().yellow(), error.cause()));
                 }
             }
-            Row::new(vec![Cell::new(name), path, moved])
+            let invalid = &format!("{} invalid UTF-8", "warning:".bold().yellow());
+            let name = Cell::new(match name {
+                Some(name) => name,
+                None => invalid,
+            });
+            Row::new(vec![name, path, moved])
         })
         .collect();
     let mut table = Table::init(rows);
