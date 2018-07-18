@@ -16,6 +16,7 @@ extern crate serde_derive;
 use clap::ArgMatches;
 use colored::*;
 use exit::*;
+use failure::Fail;
 use std::env;
 use std::fs;
 use std::io::{self, Write};
@@ -47,8 +48,15 @@ fn main() {
 
 fn open(matches: &ArgMatches) {
     let name: &str = matches.value_of("NAME").unwrap();
-    let ws: Workspace = workspace::get(name)
+    let ws = workspace::get(name)
         .unwrap_or_exit(&format!("A workspace called '{}' does not exist", name));
+    let ws = ws.unwrap_or_else(|error| {
+        let cause = error
+            .cause()
+            .map_or(String::default(), |cause| cause.to_string());
+        error!("{} — {}", error, cause);
+        process::exit(1)
+    });
     if !ws.path.exists() {
         error!("The location of this workspace does not exist anymore");
         println!("The path '{}' was moved or deleted", ws.path.display());

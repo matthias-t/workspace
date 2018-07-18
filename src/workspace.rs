@@ -45,8 +45,13 @@ pub fn exists(name: &str) -> bool {
     file_path(name).exists()
 }
 
-pub fn get(name: &str) -> Result<Workspace, Error> {
-    parse(file_path(name))
+pub fn get(name: &str) -> Option<Result<Workspace, Error>> {
+    let path = file_path(name);
+    if !path.exists() {
+        None
+    } else {
+        Some(parse(path))
+    }
 }
 
 pub fn all() -> Vec<(Option<String>, Result<Workspace, Error>)> {
