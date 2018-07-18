@@ -4,7 +4,6 @@ extern crate toml;
 use super::exit::Exit;
 use super::VERBOSE;
 use colored::*;
-use failure::Error;
 use std::env;
 use std::fs;
 use std::io::{self, Read, Write};
@@ -135,4 +134,24 @@ fn folder_path() -> PathBuf {
     }
 
     path
+}
+
+#[derive(Fail, Debug)]
+pub enum Error {
+    #[fail(display = "Could not read workspace data")]
+    Read(#[cause] io::Error),
+    #[fail(display = "Could not parse workspace data")]
+    Parse(#[cause] toml::de::Error),
+}
+
+impl From<io::Error> for Error {
+    fn from(cause: io::Error) -> Error {
+        Error::Read(cause)
+    }
+}
+
+impl From<toml::de::Error> for Error {
+    fn from(cause: toml::de::Error) -> Error {
+        Error::Parse(cause)
+    }
 }

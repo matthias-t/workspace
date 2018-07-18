@@ -103,7 +103,7 @@ fn list() {
                     }
                 }
                 Err(error) => {
-                    path = Cell::new(&format!("{} {}", "warning:".bold().yellow(), error.cause()));
+                    path = Cell::new(&format!("{} {}", "warning:".bold().yellow(), error));
                 }
             }
             let invalid = &format!("{} invalid UTF-8", "warning:".bold().yellow());
