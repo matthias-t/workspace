@@ -59,11 +59,7 @@ pub fn all() -> Vec<(Option<String>, Result<Workspace, Error>)> {
         .into_iter()
         .map(|path| {
             // Safe to unwrap here, because paths() cannot contain a file without a stem
-            let name = path
-                .file_stem()
-                .unwrap()
-                .to_str()
-                .map(|slice| slice.to_string());
+            let name = path.file_stem().unwrap().to_str().map(str::to_owned);
             (name, path)
         })
         .map(|(name, path)| (name, parse(&path)))
