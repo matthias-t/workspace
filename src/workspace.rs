@@ -50,7 +50,7 @@ pub fn get(name: &str) -> Option<Result<Workspace, Error>> {
     if !path.exists() {
         None
     } else {
-        Some(parse(path))
+        Some(parse(&path))
     }
 }
 
@@ -66,22 +66,22 @@ pub fn all() -> Vec<(Option<String>, Result<Workspace, Error>)> {
                 .map(|slice| slice.to_string());
             (name, path)
         })
-        .map(|(name, path)| (name, parse(path)))
+        .map(|(name, path)| (name, parse(&path)))
         .collect()
 }
 
-fn parse(path: PathBuf) -> Result<Workspace, Error> {
-    let content: String = read(path)?;
+fn parse(path: &PathBuf) -> Result<Workspace, Error> {
+    let content: String = read(&path)?;
     let ws: Workspace = toml::from_str(&content)?;
     Ok(ws)
 }
 
-fn read(path: PathBuf) -> io::Result<String> {
+fn read(path: &PathBuf) -> io::Result<String> {
     let mut content: String = String::new();
 
     fs::OpenOptions::new()
         .read(true)
-        .open(path)?
+        .open(&path)?
         .read_to_string(&mut content)?;
 
     Ok(content)
@@ -122,7 +122,7 @@ fn paths() -> Vec<PathBuf> {
     paths
 }
 
-fn file_path(name: &str) -> PathBuf {
+pub fn file_path(name: &str) -> PathBuf {
     let mut path = folder_path();
     path.push(name);
     path.set_extension("toml");

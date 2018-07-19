@@ -48,13 +48,17 @@ fn main() {
 
 fn open(matches: &ArgMatches) {
     let name: &str = matches.value_of("NAME").unwrap();
-    let ws = workspace::get(name)
+    let result = workspace::get(name)
         .unwrap_or_exit(&format!("A workspace called '{}' does not exist", name));
-    let ws = ws.unwrap_or_else(|error| {
+    let ws = result.unwrap_or_else(|error| {
         let cause = error
             .cause()
             .map_or(String::default(), |cause| cause.to_string());
-        error!("{} — {}", error, cause);
+        let path = workspace::file_path(name);
+        error!("{} from {}\n       {}", error, path.display(), cause);
+        if let Some(backtrace) = error.backtrace() {
+            log!("{}", backtrace);
+        }
         process::exit(1)
     });
     if !ws.path.exists() {
