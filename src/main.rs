@@ -51,10 +51,11 @@ fn open(matches: &ArgMatches) {
     let result = workspace::get(name)
         .unwrap_or_exit(&format!("A workspace called '{}' does not exist", name));
     let ws = result.unwrap_or_else(|error| {
-        let cause = error.cause().map_or(String::default(), Fail::to_string);
         let path = workspace::file_path(name);
         error!("{} from {}", error, path.display());
-        indent_error!("{}", cause);
+        if let Some(cause) = error.cause() {
+            indent_error!("{}", cause);
+        }
         if let Some(backtrace) = error.backtrace() {
             log!("{}", backtrace);
         }
