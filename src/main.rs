@@ -55,7 +55,8 @@ fn open(matches: &ArgMatches) {
             .cause()
             .map_or(String::default(), |cause| cause.to_string());
         let path = workspace::file_path(name);
-        error!("{} from {}\n       {}", error, path.display(), cause);
+        error!("{} from {}", error, path.display());
+        indent_error!("{}", cause);
         if let Some(backtrace) = error.backtrace() {
             log!("{}", backtrace);
         }
@@ -63,7 +64,7 @@ fn open(matches: &ArgMatches) {
     });
     if !ws.path.exists() {
         error!("The location of this workspace does not exist anymore");
-        println!("The path '{}' was moved or deleted", ws.path.display());
+        indent_error!("the path '{}' was moved or deleted", ws.path.display());
         process::exit(1);
     }
     ws.open();

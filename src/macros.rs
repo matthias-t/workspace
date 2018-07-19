@@ -11,6 +11,12 @@ macro_rules! error {
     };
 }
 
+macro_rules! indent_error {
+    ($message:expr$(,$arg:expr)*) => {
+        eprintln!(concat!("       ", $message)$(, $arg)*);
+    };
+}
+
 // Dependencies: colored::Colorize
 macro_rules! warn {
     ($message:expr$(,$arg:expr)*) => {
