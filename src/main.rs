@@ -118,11 +118,8 @@ fn list() {
                     path = Cell::new(&format!("{} {}", "warning:".bold().yellow(), error));
                 }
             }
-            let invalid = &format!("{} invalid UTF-8", "warning:".bold().yellow());
-            let name = Cell::new(match name {
-                Some(name) => name,
-                None => invalid,
-            });
+            let invalid = format!("{} invalid UTF-8", "warning:".bold().yellow());
+            let name = Cell::new(name.as_ref().unwrap_or(&invalid).as_str());
             Row::new(vec![name, path, moved])
         })
         .collect();
