@@ -103,10 +103,10 @@ fn list() {
     use prettytable::{cell::Cell, format, row::Row, Table};
     let rows: Vec<Row> = all
         .iter()
-        .map(|&(ref name, ref result)| {
+        .map(|(name, result)| {
             let path: Cell;
             let mut moved = Cell::new("");
-            match result.as_ref() {
+            match result {
                 Ok(ws) => {
                     path = Cell::new(&ws.path.display().to_string().bright_black().to_string());
                     if !ws.path.exists() {
