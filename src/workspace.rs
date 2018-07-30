@@ -19,7 +19,7 @@ impl Workspace {
         run!("cd {}", self.path.display());
     }
 
-    pub fn write(ws: &Workspace, name: &str) {
+    pub fn write(&self, name: &str) {
         const ERR_MESSAGE: &str = "Could not write workspace data";
 
         let path = Workspace::file_path(name);
@@ -30,7 +30,7 @@ impl Workspace {
             .open(path)
             .unwrap_or_exit(ERR_MESSAGE);
 
-        let serialized = toml::to_string(ws).unwrap();
+        let serialized = toml::to_string(self).unwrap();
         file.write_fmt(format_args!("{}", serialized))
             .unwrap_or_exit(ERR_MESSAGE);
     }

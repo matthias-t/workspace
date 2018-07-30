@@ -78,7 +78,7 @@ fn add(matches: &ArgMatches) {
     let ws = Workspace {
         path: env::current_dir().unwrap_or_exit("Could not read current directory"),
     };
-    Workspace::write(&ws, &name);
+    ws.write(&name);
     println!("Created workspace '{}' in {}", name, ws.path.display());
 }
 
