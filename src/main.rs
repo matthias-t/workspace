@@ -48,10 +48,10 @@ fn main() {
 
 fn open(matches: &ArgMatches) {
     let name: &str = matches.value_of("NAME").unwrap();
-    let result = workspace::get(name)
+    let result = Workspace::get(name)
         .unwrap_or_exit(&format!("A workspace called '{}' does not exist", name));
     let ws = result.unwrap_or_else(|error| {
-        let path = workspace::file_path(name);
+        let path = Workspace::file_path(name);
         error!("{} from {}", error, path.display());
         if let Some(cause) = error.cause() {
             indent_error!("{}", cause);
@@ -71,14 +71,14 @@ fn open(matches: &ArgMatches) {
 
 fn add(matches: &ArgMatches) {
     let name = matches.value_of("NAME").unwrap().to_string();
-    if workspace::exists(&name) {
+    if Workspace::exists(&name) {
         error!("A workspace called '{}' already exists", name);
         process::exit(1);
     }
     let ws = Workspace {
         path: env::current_dir().unwrap_or_exit("Could not read current directory"),
     };
-    workspace::write(&ws, &name);
+    ws.write(&name);
     println!("Created workspace '{}' in {}", name, ws.path.display());
 }
 
@@ -89,12 +89,12 @@ fn delete(matches: &ArgMatches) {
         confirm!("delete the workspace '{}'", name);
     }
 
-    workspace::delete(name);
+    Workspace::delete(name);
     println!("Deleted workspace '{}'", name);
 }
 
 fn list() {
-    let all = workspace::all();
+    let all = Workspace::all();
     if all.is_empty() {
         println!("No existing workspaces.\nRun `workspace add <NAME>` to create one.");
         return;
