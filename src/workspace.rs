@@ -22,7 +22,7 @@ impl Workspace {
     pub fn write(&self, name: &str) {
         const ERR_MESSAGE: &str = "Could not write workspace data";
 
-        let path = Workspace::file_path(name);
+        let path = Self::file_path(name);
         let mut file = fs::OpenOptions::new()
             .read(false)
             .write(true)
@@ -36,37 +36,37 @@ impl Workspace {
     }
 
     pub fn delete(name: &str) {
-        let path = Workspace::file_path(name);
+        let path = Self::file_path(name);
         fs::remove_file(path).unwrap_or_exit("Could not delete workspace data");
     }
 
     pub fn exists(name: &str) -> bool {
-        Workspace::file_path(name).exists()
+        Self::file_path(name).exists()
     }
 
     pub fn get(name: &str) -> Option<Result<Workspace, Error>> {
-        let path = Workspace::file_path(name);
+        let path = Self::file_path(name);
         if !path.exists() {
             None
         } else {
-            Some(Workspace::parse(&path))
+            Some(Self::parse(&path))
         }
     }
 
     pub fn all() -> Vec<(Option<String>, Result<Workspace, Error>)> {
-        Workspace::paths()
+        Self::paths()
             .into_iter()
             .map(|path| {
                 // Safe to unwrap here, because paths() cannot contain a file without a stem
                 let name = path.file_stem().unwrap().to_str().map(str::to_owned);
                 (name, path)
             })
-            .map(|(name, path)| (name, Workspace::parse(&path)))
+            .map(|(name, path)| (name, Self::parse(&path)))
             .collect()
     }
 
     fn parse(path: &PathBuf) -> Result<Workspace, Error> {
-        let content: String = Workspace::read(&path)?;
+        let content: String = Self::read(&path)?;
         let ws: Workspace = toml::from_str(&content)?;
         Ok(ws)
     }
@@ -84,7 +84,7 @@ impl Workspace {
 
     fn paths() -> Vec<PathBuf> {
         let entries =
-            fs::read_dir(Workspace::folder_path()).unwrap_or_exit("Could not find workspace data");
+            fs::read_dir(Self::folder_path()).unwrap_or_exit("Could not find workspace data");
         let mut paths: Vec<PathBuf> = Vec::new();
 
         for entry in entries {
@@ -119,7 +119,7 @@ impl Workspace {
     }
 
     pub fn file_path(name: &str) -> PathBuf {
-        let mut path = Workspace::folder_path();
+        let mut path = Self::folder_path();
         path.push(name);
         path.set_extension("toml");
         path
