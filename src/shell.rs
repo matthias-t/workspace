@@ -8,6 +8,16 @@ pub const BASH: &str = r#"function ws {
     done < <( workspace "$@" );
 }"#;
 
+pub const FISH: &str = r#"function ws
+    workspace $argv | while read line
+        if set command (string replace "RUN>" "" $line )
+            eval $command
+        else
+            echo $line
+        end
+    end
+end"#;
+
 pub const POWERSHELL: &str = r#"function ws {
     workspace $args | % {
         if ($_ -match "^RUN>") {

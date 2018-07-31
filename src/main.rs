@@ -131,6 +131,8 @@ fn list() {
 fn shell(matches: &ArgMatches) {
     if matches.subcommand_matches("bash").is_some() {
         println!("{}", shell::BASH);
+    } else if matches.subcommand_matches("fish").is_some() {
+        println!("{}", shell::FISH);
     } else if matches.subcommand_matches("powershell").is_some() {
         println!("{}", shell::POWERSHELL)
     } else if let Some(matches) = matches.subcommand_matches("cmd") {

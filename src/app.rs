@@ -64,6 +64,13 @@ pub fn cli() -> App<'static, 'static> {
                         ),
                 )
                 .subcommand(
+                    SubCommand::with_name("fish")
+                        .about("Returns a fish function to source in your fish.config")
+                        .long_about(
+                            "Returns a fish function to source in your fish.config with \nworkspace shell fish | source"
+                        ),
+                )
+                .subcommand(
                     SubCommand::with_name("powershell")
                         .alias("PowerShell")
                         .alias("posh")
