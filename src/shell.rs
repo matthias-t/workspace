@@ -10,7 +10,7 @@ pub const BASH: &str = r#"function ws {
 
 pub const FISH: &str = r#"function ws
     workspace $argv | while read line
-        if set command (string replace "RUN>" "" $line )
+        if set command (string replace "RUN>" "" $line)
             eval $command
         else
             echo $line
