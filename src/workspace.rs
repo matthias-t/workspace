@@ -1,10 +1,10 @@
+extern crate dirs;
 extern crate serde;
 extern crate toml;
 
 use super::exit::Exit;
 use super::VERBOSE;
 use colored::*;
-use std::env;
 use std::fs;
 use std::io::{self, Read, Write};
 use std::path::PathBuf;
@@ -126,7 +126,7 @@ impl Workspace {
     }
 
     fn folder_path() -> PathBuf {
-        let mut path = env::home_dir().unwrap_or_exit("Could not find home directory");
+        let mut path = dirs::home_dir().unwrap_or_exit("Could not find home directory");
         path.push(".workspace");
 
         if !path.exists() {

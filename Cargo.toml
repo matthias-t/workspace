@@ -6,6 +6,7 @@ authors = ["Matthias Totschnig <matthias@totschnig.org>","Roma Bhattacharjee <ro
 [dependencies]
 clap = "2.31.2"
 colored = "1.6.0"
+dirs = "1.0.2"
 serde = "1.0.62"
 serde_derive = "1.0.62"
 toml = "0.4"
