@@ -67,13 +67,13 @@ macro_rules! skip_none {
     };
 }
 
-// Dependencies: std::io, warn!, Exit (src/exit.rs)
+// Dependencies: warn!, Exit (src/exit.rs)
 macro_rules! confirm {
     ($action:expr$(,$arg:expr)*) => {
         loop {
             warn!(concat!("Are you certain you wish to ", $action, "? [y/n]")$(,$arg)*);
             let mut response = String::new();
-            io::stdin()
+            ::std::io::stdin()
                 .read_line(&mut response)
                 .unwrap_or_exit("Could not read line");
             response = response.to_lowercase();
