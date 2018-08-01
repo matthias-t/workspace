@@ -34,6 +34,8 @@ pub fn cli() -> App<'static, 'static> {
         )
         .subcommand(
             SubCommand::with_name("delete")
+                .alias("remove")
+                .alias("rm")
                 .about("Deletes a specified workspace, if present")
                 .arg(
                     Arg::with_name("NAME")
