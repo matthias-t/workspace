@@ -19,7 +19,7 @@ use exit::*;
 use failure::Fail;
 use std::env;
 use std::fs;
-use std::io::{self, Write};
+use std::io::Write;
 use std::path;
 use std::process;
 use workspace::Workspace;
