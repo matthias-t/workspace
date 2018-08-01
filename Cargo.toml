@@ -4,13 +4,13 @@ version = "0.0.0"
 authors = ["Matthias Totschnig <matthias@totschnig.org>","Roma Bhattacharjee <roma0615@gmail.com>"]
 
 [dependencies]
-clap = "2.31.2"
-colored = "1.6.0"
+clap = "2.32.0"
+colored = "1.6.1"
 dirs = "1.0.2"
-serde = "1.0.62"
-serde_derive = "1.0.62"
-toml = "0.4"
-failure = "0.1.1"
+serde = "1.0.70"
+serde_derive = "1.0.70"
+toml = "0.4.6"
+failure = "0.1.2"
 prettytable-rs = { git = "https://github.com/liautaud/prettytable-rs" }
 
 [[bin]]
