@@ -126,8 +126,8 @@ impl Workspace {
     }
 
     fn folder_path() -> PathBuf {
-        let mut path = dirs::home_dir().unwrap_or_exit("Could not find home directory");
-        path.push(".workspace");
+        let mut path = dirs::config_dir().unwrap_or_exit("Could not find configuration directory");
+        path.push("workspace");
 
         if !path.exists() {
             fs::create_dir(&path)
