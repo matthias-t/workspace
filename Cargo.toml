@@ -11,7 +11,7 @@ serde = "1.0.70"
 serde_derive = "1.0.70"
 toml = "0.4.6"
 failure = "0.1.2"
-prettytable-rs = { git = "https://github.com/liautaud/prettytable-rs" }
+term_grid = "0.1.7"
 
 [[bin]]
 name = "workspace"

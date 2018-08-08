@@ -9,7 +9,7 @@ extern crate clap;
 extern crate colored;
 #[macro_use]
 extern crate failure;
-extern crate prettytable;
+extern crate term_grid;
 #[macro_use]
 extern crate serde_derive;
 
@@ -100,32 +100,33 @@ fn list() {
         return;
     }
 
-    use prettytable::{cell::Cell, format, row::Row, Table};
-    let rows: Vec<Row> = all
-        .iter()
-        .map(|(name, result)| {
-            let path: Cell;
-            let mut moved = Cell::new("");
-            match result {
-                Ok(ws) => {
-                    path = Cell::new(&ws.path.display().to_string().bright_black().to_string());
-                    if !ws.path.exists() {
-                        moved =
-                            Cell::new(&format!("{} path has moved", "warning:".bold().yellow()));
-                    }
-                }
-                Err(error) => {
-                    path = Cell::new(&format!("{} {}", "warning:".bold().yellow(), error));
+    use term_grid::{Direction, Filling, Grid, GridOptions};
+    let mut grid = Grid::new(GridOptions {
+        filling: Filling::Spaces(2),
+        direction: Direction::LeftToRight,
+    });
+
+    for (name, result) in all {
+        let path: String;
+        let mut moved = String::new();
+        match result {
+            Ok(ws) => {
+                path = ws.path.display().to_string().bright_black().to_string();
+                if !ws.path.exists() {
+                    moved = format!("{} path has moved", "warning:".bold().yellow());
                 }
             }
-            let invalid = format!("{} invalid UTF-8", "warning:".bold().yellow());
-            let name = Cell::new(name.as_ref().unwrap_or(&invalid).as_str());
-            Row::new(vec![name, path, moved])
-        })
-        .collect();
-    let mut table = Table::init(rows);
-    table.set_format(*format::consts::FORMAT_CLEAN);
-    table.printstd();
+            Err(error) => {
+                path = format!("{} {}", "warning:".bold().yellow(), error);
+            }
+        }
+        let name = name.unwrap_or_else(|| format!("{} invalid UTF-8", "warning:".bold().yellow()));
+
+        grid.add(name.into());
+        grid.add(path.into());
+        grid.add(moved.into());
+    }
+    print!("{}", grid.fit_into_columns(3));
 }
 
 fn shell(matches: &ArgMatches) {
