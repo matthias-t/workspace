@@ -84,6 +84,10 @@ fn add(matches: &ArgMatches) {
 
 fn delete(matches: &ArgMatches) {
     let name: &str = matches.value_of("NAME").unwrap();
+    if !Workspace::file_path(name).exists() {
+        error!("A workspace called '{}' does not exist", name);
+        process::exit(1);
+    }
 
     if !matches.is_present("yes") {
         confirm!("delete the workspace '{}'", name);
