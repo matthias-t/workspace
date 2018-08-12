@@ -90,7 +90,7 @@ fn delete(matches: &ArgMatches) {
     }
 
     if !matches.is_present("yes") {
-        confirm!("delete the workspace '{}'", name);
+        confirm!("Delete the workspace '{}'", name);
     }
 
     Workspace::delete(name);

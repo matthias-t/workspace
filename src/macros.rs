@@ -67,24 +67,36 @@ macro_rules! skip_none {
     };
 }
 
-// Dependencies: warn!, Exit (src/exit.rs)
+// Dependencies: warn!, confirm_once!
 macro_rules! confirm {
-    ($action:expr$(,$arg:expr)*) => {
+    ($confirm:stmt;) => {
         loop {
-            warn!(concat!("Are you certain you wish to ", $action, "? [y/n]")$(,$arg)*);
-            let mut response = String::new();
-            ::std::io::stdin()
-                .read_line(&mut response)
-                .unwrap_or_exit("Could not read line");
-            response = response.to_lowercase();
-            let response: &str = response.trim();
-            if response == "y" || response == "yes" {
-                break;
-            }
-            if response == "n" || response == "no" {
-                println!("Aborting");
-                return;
-            }
+            $confirm
+            confirm_once!();
+        }
+    };
+    ($prompt:expr$(,$arg:expr)*) => {
+        confirm!{
+            warn!(concat!($prompt, "? [y/n]")$(,$arg)*);
+        }
+    };
+}
+
+// Dependencies: Exit (src/exit.rs)
+macro_rules! confirm_once {
+    () => {
+        let mut response = String::new();
+        ::std::io::stdin()
+            .read_line(&mut response)
+            .unwrap_or_exit("Could not read line");
+        response = response.to_lowercase();
+        let response: &str = response.trim();
+        if response == "y" || response == "yes" {
+            break;
+        }
+        if response == "n" || response == "no" {
+            println!("Aborting");
+            return;
         }
     };
 }
