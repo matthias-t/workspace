@@ -75,9 +75,35 @@ fn add(matches: &ArgMatches) {
         error!("A workspace called '{}' already exists", name);
         process::exit(1);
     }
-    let ws = Workspace {
-        path: env::current_dir().unwrap_or_exit("Could not read current directory"),
-    };
+    let path = env::current_dir().unwrap_or_exit("Could not read current directory");
+
+    // Check for other workspaces with the same path
+    let sames: Vec<_> = Workspace::all()
+        .into_iter()
+        .filter_map(|(name, result)| {
+            if let (Some(name), Ok(workspace)) = (name, result) {
+                if workspace.path == path {
+                    return Some(name);
+                }
+            }
+            None
+        })
+        .collect();
+
+    if !sames.is_empty() {
+        warn!(
+            "Found {} pointing to this directory: {}",
+            if sames.len() == 1 {
+                "another workspace"
+            } else {
+                "other workspaces"
+            },
+            sames.join(", ")
+        );
+        confirm!("Create a new workspace here anyway");
+    }
+
+    let ws = Workspace { path };
     ws.write(&name);
     println!("Created workspace '{}' in {}", name, ws.path.display());
 }
