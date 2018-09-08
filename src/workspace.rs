@@ -12,11 +12,16 @@ use std::path::PathBuf;
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Workspace {
     pub path: PathBuf,
+    #[serde(default)]
+    pub commands: Vec<String>,
 }
 
 impl Workspace {
     pub fn open(&self) {
         run!("cd {}", self.path.display());
+        for command in &self.commands {
+            run!("{}", command);
+        }
     }
 
     pub fn write(&self, name: &str) {

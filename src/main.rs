@@ -103,7 +103,10 @@ fn add(matches: &ArgMatches) {
         confirm!("Create a new workspace here anyway");
     }
 
-    let ws = Workspace { path };
+    let ws = Workspace {
+        path,
+        commands: Vec::default(),
+    };
     ws.write(&name);
     println!("Created workspace '{}' in {}", name, ws.path.display());
 }
