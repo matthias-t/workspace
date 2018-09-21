@@ -1,7 +1,7 @@
 pub const BASH: &str = r#"function ws {
     while read -r line; do
         if [[ "$line" == RUN\>* ]]; then
-            eval "${line:4}";
+            eval "${line:4}" < /dev/tty;
         else
             echo "$line";
         fi;
@@ -11,7 +11,7 @@ pub const BASH: &str = r#"function ws {
 pub const FISH: &str = r#"function ws
     workspace $argv | while read line
         if set command (string replace "RUN>" "" $line)
-            eval $command
+            eval $command < /dev/tty
         else
             echo $line
         end
