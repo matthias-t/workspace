@@ -93,6 +93,7 @@ fn main() {
             commands: Vec::default(),
         };
         ws.write(&name);
+        Workspace::edit(&name);
         println!("Created workspace '{}' in {}", name, ws.path.display());
     } else if let Some(matches) = matches.subcommand_matches("edit") {
         let name = matches.value_of("NAME").unwrap();
