@@ -33,6 +33,15 @@ pub fn cli() -> App<'static, 'static> {
                 ),
         )
         .subcommand(
+            SubCommand::with_name("edit")
+                .about("Edits a workspace")
+                .arg(
+                    Arg::with_name("NAME")
+                        .help("Name of the workspace to edit")
+                        .required(true),
+                ),
+        )
+        .subcommand(
             SubCommand::with_name("delete")
                 .alias("remove")
                 .alias("rm")

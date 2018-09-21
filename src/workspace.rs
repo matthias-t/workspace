@@ -5,6 +5,7 @@ extern crate toml;
 use super::exit::Exit;
 use super::VERBOSE;
 use colored::*;
+use std::env;
 use std::fs;
 use std::io::{self, Read, Write};
 use std::path::PathBuf;
@@ -38,6 +39,14 @@ impl Workspace {
         let serialized = toml::to_string(self).unwrap();
         file.write_fmt(format_args!("{}", serialized))
             .unwrap_or_exit(ERR_MESSAGE);
+    }
+
+    pub fn edit(name: &str) {
+        let path = Self::file_path(name);
+        let editor = env::var("EDITOR").unwrap_or_else(|_| {
+            env::var("VISUAL").unwrap_or_exit("Please set $EDITOR or $VISUAL to edit workspaces")
+        });
+        run!("{} {}", editor, path.display());
     }
 
     pub fn delete(name: &str) {
