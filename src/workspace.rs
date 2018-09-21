@@ -18,8 +18,11 @@ pub struct Workspace {
 }
 
 impl Workspace {
-    pub fn open(&self) {
+    pub fn open(&self, dir_only: bool) {
         run!("cd {}", self.path.display());
+        if dir_only {
+            return;
+        }
         for command in &self.commands {
             run!("{}", command);
         }

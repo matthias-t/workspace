@@ -53,7 +53,8 @@ fn main() {
             indent_error!("the path '{}' was moved or deleted", ws.path.display());
             process::exit(1);
         }
-        ws.open();
+        let dir_only = matches.is_present("directory");
+        ws.open(dir_only);
     } else if let Some(matches) = matches.subcommand_matches("add") {
         let name = matches.value_of("NAME").unwrap().to_string();
         if Workspace::exists(&name) {

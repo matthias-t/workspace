@@ -20,6 +20,12 @@ pub fn cli() -> App<'static, 'static> {
                     Arg::with_name("NAME")
                         .help("Name of the workspace to open")
                         .required(true),
+                )
+                .arg(
+                    Arg::with_name("directory")
+                        .help("Only change the directory")
+                        .short("d")
+                        .long("directory"),
                 ),
         )
         .subcommand(
