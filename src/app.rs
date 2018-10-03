@@ -2,7 +2,7 @@ use clap::*;
 
 pub fn cli() -> App<'static, 'static> {
     App::new("workspace")
-        .version("0.0.0")
+        .version("0.1.0")
         .about("CLI that takes care of your windows, tabs and working directory")
         .author("Matthias T. and Roma B.")
         .setting(AppSettings::ArgRequiredElseHelp)
