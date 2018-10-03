@@ -98,7 +98,7 @@ fn main() {
         println!("Created workspace '{}' in {}", name, ws.path.display());
     } else if let Some(matches) = matches.subcommand_matches("edit") {
         let name = matches.value_of("NAME").unwrap();
-        if !Workspace::file_path(name).exists() {
+        if !Workspace::exists(&name) {
             error!("A workspace called '{}' does not exist", name);
             process::exit(1);
         }
