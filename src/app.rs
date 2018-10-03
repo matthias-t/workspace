@@ -48,6 +48,20 @@ pub fn cli() -> App<'static, 'static> {
                 ),
         )
         .subcommand(
+            SubCommand::with_name("rename")
+                .about("Renames a workspace")
+                .arg(
+                    Arg::with_name("OLD_NAME")
+                        .help("Name of the workspace to rename")
+                        .required(true),
+                )
+                .arg(
+                    Arg::with_name("NEW_NAME")
+                        .help("New name of the workspace")
+                        .required(true),
+                ),
+        )
+        .subcommand(
             SubCommand::with_name("delete")
                 .alias("remove")
                 .alias("rm")

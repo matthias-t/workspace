@@ -103,6 +103,25 @@ fn main() {
             process::exit(1);
         }
         Workspace::edit(name);
+    } else if let Some(matches) = matches.subcommand_matches("rename") {
+        let old_name = matches.value_of("OLD_NAME").unwrap();
+        let new_name = matches.value_of("NEW_NAME").unwrap();
+        if !Workspace::exists(&old_name) {
+            error!("A workspace called '{}' does not exist", old_name);
+            process::exit(1);
+        }
+        if Workspace::exists(&new_name) {
+            error!(
+                "Cannot rename to '{}' because a workspace with that name already exists",
+                new_name
+            );
+            process::exit(1)
+        }
+        std::fs::rename(
+            Workspace::file_path(old_name),
+            Workspace::file_path(new_name),
+        )
+        .unwrap_or_exit("Could not rename config file");
     } else if let Some(matches) = matches.subcommand_matches("delete") {
         let name: &str = matches.value_of("NAME").unwrap();
         if !Workspace::file_path(name).exists() {
