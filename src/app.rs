@@ -7,6 +7,7 @@ pub fn cli() -> App<'static, 'static> {
         .author("Matthias T. and Roma B.")
         .setting(AppSettings::ArgRequiredElseHelp)
         .global_setting(AppSettings::ColoredHelp)
+        .global_setting(AppSettings::ColorAlways)
         .arg(
             Arg::with_name("verbose")
                 .long("verbose")
