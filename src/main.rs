@@ -73,8 +73,7 @@ fn main() {
                     }
                 }
                 None
-            })
-            .collect();
+            }).collect();
 
         if !sames.is_empty() {
             warn!(
