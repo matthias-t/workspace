@@ -1,4 +1,4 @@
-# workspace
+# workspace [![Build Status](https://travis-ci.com/matthias-t/workspace.svg?branch=master)](https://travis-ci.com/matthias-t/workspace)
 > a CLI that takes care of your windows, tabs and working directory
 
 ## Installation
