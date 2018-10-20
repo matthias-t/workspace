@@ -14,9 +14,9 @@ use std::path::PathBuf;
 pub struct Workspace {
     pub path: PathBuf,
     #[serde(default)]
-    pub commands: Commands,
-    #[serde(default)]
     pub tabs: Vec<String>,
+    #[serde(default)]
+    pub commands: Commands,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default)]
