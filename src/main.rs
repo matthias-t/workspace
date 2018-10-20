@@ -91,7 +91,7 @@ fn main() {
 
         let ws = Workspace {
             path,
-            commands: Vec::default(),
+            commands: workspace::Commands::default(),
         };
         ws.write(&name);
         Workspace::edit(&name);
@@ -120,8 +120,7 @@ fn main() {
         std::fs::rename(
             Workspace::file_path(old_name),
             Workspace::file_path(new_name),
-        )
-        .unwrap_or_exit("Could not rename config file");
+        ).unwrap_or_exit("Could not rename config file");
     } else if let Some(matches) = matches.subcommand_matches("delete") {
         let name: &str = matches.value_of("NAME").unwrap();
         if !Workspace::file_path(name).exists() {

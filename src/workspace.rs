@@ -14,7 +14,15 @@ use std::path::PathBuf;
 pub struct Workspace {
     pub path: PathBuf,
     #[serde(default)]
-    pub commands: Vec<String>,
+    pub commands: Commands,
+}
+
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub struct Commands {
+    #[serde(default)]
+    pub local: Vec<String>,
+    #[serde(default)]
+    pub external: Vec<String>,
 }
 
 impl Workspace {
@@ -23,8 +31,18 @@ impl Workspace {
         if dir_only {
             return;
         }
-        for command in &self.commands {
+
+        for command in &self.commands.local {
             run!("{}", command);
+        }
+        if !self.commands.external.is_empty() {
+            if let Ok(terminal) = env::var("TERMINAL") {
+                for command in &self.commands.external {
+                    run!("{} {} &", &terminal, command);
+                }
+            } else {
+                error!("Please set $TERMINAL to run external commands.");
+            }
         }
     }
 
