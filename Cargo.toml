@@ -1,7 +1,7 @@
 [package]
 name = "workspace"
 description = "CLI that takes care of your windows, tabs and working directory"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Matthias Totschnig <matthias@totschnig.org>","Roma Bhattacharjee <roma0615@gmail.com>"]
 repository = "https://github.com/matthias-t/workspace"
 license = "MIT"
