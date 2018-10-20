@@ -92,6 +92,7 @@ fn main() {
         let ws = Workspace {
             path,
             commands: workspace::Commands::default(),
+            tabs: Vec::default(),
         };
         ws.write(&name);
         Workspace::edit(&name);

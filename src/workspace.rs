@@ -15,6 +15,8 @@ pub struct Workspace {
     pub path: PathBuf,
     #[serde(default)]
     pub commands: Commands,
+    #[serde(default)]
+    pub tabs: Vec<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default)]
@@ -42,6 +44,16 @@ impl Workspace {
                 }
             } else {
                 error!("Please set $TERMINAL to run external commands.");
+            }
+        }
+
+        if !self.tabs.is_empty() {
+            if let Ok(browser) = env::var("BROWSER") {
+                for tab in &self.tabs {
+                    run!("{} {}", &browser, tab);
+                }
+            } else {
+                error!("Please set $BROWSER to open browser tabs.")
             }
         }
     }
