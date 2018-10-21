@@ -1,6 +1,6 @@
 [package]
 name = "workspace"
-description = "CLI that takes care of your windows, tabs and working directory"
+description = "a command-line project manager to automate repetitive tasks"
 version = "0.2.2"
 authors = ["Matthias Totschnig <matthias@totschnig.org>","Roma Bhattacharjee <roma0615@gmail.com>"]
 repository = "https://github.com/matthias-t/workspace"
