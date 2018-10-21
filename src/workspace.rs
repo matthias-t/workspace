@@ -3,6 +3,7 @@ extern crate serde;
 extern crate toml;
 
 use super::exit::Exit;
+use super::tilde::Tilde;
 use super::VERBOSE;
 use colored::*;
 use std::env;
@@ -142,20 +143,23 @@ impl Workspace {
             let file_type = entry.file_type().unwrap();
             skip!(
                 !file_type.is_file(),
-                format!("Skipping {} because it's not a file", tilde_path(&path))
+                format!("Skipping {} because it's not a file", path.tilde_format())
             );
 
             skip_none!(
                 path.extension(),
                 format!(
                     "Skipping {} because it has no file extension",
-                    tilde_path(&path)
+                    path.tilde_format()
                 )
             );
             let extension = path.extension().unwrap();
             skip!(
                 extension.to_string_lossy() != "toml",
-                format!("Skipping {} because it's not a TOML file", tilde_path(&path))
+                format!(
+                    "Skipping {} because it's not a TOML file",
+                    path.tilde_format()
+                )
             );
 
             paths.push(entry.path());
@@ -176,8 +180,10 @@ impl Workspace {
         path.push("workspace");
 
         if !path.exists() {
-            fs::create_dir(&path)
-                .unwrap_or_exit(&format!("Could not create directory {}", tilde_path(&path)));
+            fs::create_dir(&path).unwrap_or_exit(&format!(
+                "Could not create directory {}",
+                path.tilde_format()
+            ));
         }
 
         path
@@ -201,18 +207,5 @@ impl From<io::Error> for Error {
 impl From<toml::de::Error> for Error {
     fn from(cause: toml::de::Error) -> Error {
         Error::Parse(cause)
-    }
-}
-
-pub fn tilde_path(p: &PathBuf) -> String {
-    let path = p.display().to_string();
-    let home_dir = match dirs::home_dir() {
-        Some(dir) => dir.display().to_string(),
-        None => String::new()
-    };
-    if path.starts_with(home_dir.as_str()) {
-        path.replacen(home_dir.as_str(), "~", 1)
-    } else {
-        path
     }
 }
