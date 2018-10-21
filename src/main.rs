@@ -39,7 +39,7 @@ fn main() {
             .unwrap_or_exit(&format!("A workspace called '{}' does not exist", name));
         let ws = result.unwrap_or_else(|error| {
             let path = Workspace::file_path(name);
-            error!("{} from {}", error, path.display());
+            error!("{} from {}", error, workspace::tilde_path(&path));
             if let Some(cause) = error.cause() {
                 indent_error!("{}", cause);
             }
@@ -50,7 +50,7 @@ fn main() {
         });
         if !ws.path.exists() {
             error!("The location of this workspace does not exist anymore");
-            indent_error!("the path '{}' was moved or deleted", ws.path.display());
+            indent_error!("the path '{}' was moved or deleted", workspace::tilde_path(&ws.path));
             process::exit(1);
         }
         let dir_only = matches.is_present("directory");
@@ -95,7 +95,7 @@ fn main() {
         };
         ws.write(&name);
         Workspace::edit(&name);
-        println!("Created workspace '{}' in {}", name, ws.path.display());
+        println!("Created workspace '{}' in {}", name, workspace::tilde_path(&ws.path));
     } else if let Some(matches) = matches.subcommand_matches("edit") {
         let name = matches.value_of("NAME").unwrap();
         if !Workspace::exists(&name) {
@@ -152,7 +152,7 @@ fn main() {
             let mut moved = String::new();
             match result {
                 Ok(ws) => {
-                    path = ws.path.display().to_string().bright_black().to_string();
+                    path = workspace::tilde_path(&ws.path).bright_black().to_string();
                     if !ws.path.exists() {
                         moved = format!("{} path has moved", "warning:".bold().yellow());
                     }
@@ -187,13 +187,13 @@ fn main() {
                 .open(&path)
                 .unwrap_or_exit(&format!(
                     "Could not create batch file at {}",
-                    path.display()
+                    workspace::tilde_path(&path)
                 ));
 
             file.write_fmt(format_args!("{}", shell::CMD))
                 .unwrap_or_exit("Could not write to batch file");
 
-            println!("Wrote {}", path.display());
+            println!("Wrote {}", workspace::tilde_path(&path));
         }
     }
 }
