@@ -3,6 +3,7 @@ pub mod macros;
 mod app;
 pub mod exit;
 mod shell;
+mod tilde;
 mod workspace;
 
 extern crate clap;
@@ -22,6 +23,7 @@ use std::fs;
 use std::io::Write;
 use std::path;
 use std::process;
+use tilde::Tilde;
 use workspace::Workspace;
 
 pub static mut VERBOSE: bool = false;
@@ -39,7 +41,7 @@ fn main() {
             .unwrap_or_exit(&format!("A workspace called '{}' does not exist", name));
         let ws = result.unwrap_or_else(|error| {
             let path = Workspace::file_path(name);
-            error!("{} from {}", error, path.display());
+            error!("{} from {}", error, path.tilde_format());
             if let Some(cause) = error.cause() {
                 indent_error!("{}", cause);
             }
@@ -50,7 +52,7 @@ fn main() {
         });
         if !ws.path.exists() {
             error!("The location of this workspace does not exist anymore");
-            indent_error!("the path '{}' was moved or deleted", ws.path.display());
+            indent_error!("the path '{}' was moved or deleted", ws.path.tilde_format());
             process::exit(1);
         }
         let dir_only = matches.is_present("directory");
@@ -95,7 +97,7 @@ fn main() {
         };
         ws.write(&name);
         Workspace::edit(&name);
-        println!("Created workspace '{}' in {}", name, ws.path.display());
+        println!("Created workspace '{}' in {}", name, ws.path.tilde_format());
     } else if let Some(matches) = matches.subcommand_matches("edit") {
         let name = matches.value_of("NAME").unwrap();
         if !Workspace::exists(&name) {
@@ -152,7 +154,7 @@ fn main() {
             let mut moved = String::new();
             match result {
                 Ok(ws) => {
-                    path = ws.path.display().to_string().bright_black().to_string();
+                    path = ws.path.tilde_format().bright_black().to_string();
                     if !ws.path.exists() {
                         moved = format!("{} path has moved", "warning:".bold().yellow());
                     }
@@ -187,13 +189,13 @@ fn main() {
                 .open(&path)
                 .unwrap_or_exit(&format!(
                     "Could not create batch file at {}",
-                    path.display()
+                    path.tilde_format()
                 ));
 
             file.write_fmt(format_args!("{}", shell::CMD))
                 .unwrap_or_exit("Could not write to batch file");
 
-            println!("Wrote {}", path.display());
+            println!("Wrote {}", path.tilde_format());
         }
     }
 }
