@@ -1,10 +1,12 @@
 # workspace [![Build Status](https://travis-ci.com/matthias-t/workspace.svg?branch=master)](https://travis-ci.com/matthias-t/workspace)
-> a CLI that takes care of your windows, tabs and working directory
+> a command-line project manager to automate repetitive tasks
+
+`ws` is a CLI to manage and interpret small TOML files that specify tasks to open a project, like opening an editor, launching a server or visiting slack or documentation in the browser. For example, it can be used to efficiently switch between work and side projects.
 
 ## Installation
 
 ```bash
-> cargo install workspace
+cargo install workspace
 ```
 
 Then setup the `ws` command in your shell:
@@ -20,6 +22,14 @@ Then setup the `ws` command in your shell:
   ```powershell
   Invoke-Expression "$(workspace shell posh)"
   ```
+
+## Documentation
+
+```
+ws --help
+```
+
+More documentation is coming about the format of workspace files when it becomes more stable. For now, use the outline created by `ws add`.
 
 ## FAQ
 
