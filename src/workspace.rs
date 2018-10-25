@@ -27,6 +27,8 @@ pub struct Commands {
     pub local: Vec<String>,
     #[serde(default)]
     pub external: Vec<String>,
+    #[serde(default)]
+    pub background: Vec<String>,
 }
 
 impl Workspace {
@@ -39,6 +41,7 @@ impl Workspace {
         for command in &self.commands.local {
             run!("{}", command);
         }
+
         if !self.commands.external.is_empty() {
             if let Ok(terminal) = env::var("TERMINAL") {
                 for command in &self.commands.external {
@@ -57,6 +60,28 @@ impl Workspace {
                 }
             } else {
                 error!("Please set $TERMINAL to run external commands");
+            }
+        }
+
+        if !&self.commands.background.is_empty() {
+            if let Ok(shell) = env::var("SHELL") {
+                for command in &self.commands.background {
+                    let result = process::Command::new(&shell)
+                        .arg("-c")
+                        .arg(command)
+                        .current_dir(&self.path)
+                        .stdin(Stdio::null())
+                        .stdout(Stdio::null())
+                        .stderr(Stdio::null())
+                        .spawn();
+
+                    if result.is_err() {
+                        error!("Could not run command: {}", command);
+                        log!("{}", result.unwrap_err());
+                    }
+                }
+            } else {
+                error!("Please set $SHELL to run commands in the background.");
             }
         }
 
