@@ -10,6 +10,7 @@ use std::env;
 use std::fs;
 use std::io::{self, Read, Write};
 use std::path::PathBuf;
+use std::process::{self, Stdio};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Workspace {
@@ -41,20 +42,33 @@ impl Workspace {
         if !self.commands.external.is_empty() {
             if let Ok(terminal) = env::var("TERMINAL") {
                 for command in &self.commands.external {
-                    run!("{} {} &", &terminal, command);
+                    process::Command::new(&terminal)
+                        .arg(command)
+                        .current_dir(&self.path)
+                        .stdin(Stdio::null())
+                        .stdout(Stdio::null())
+                        .stderr(Stdio::null())
+                        .spawn()
+                        .unwrap();
                 }
             } else {
-                error!("Please set $TERMINAL to run external commands.");
+                error!("Please set $TERMINAL to run external commands");
             }
         }
 
         if !self.tabs.is_empty() {
             if let Ok(browser) = env::var("BROWSER") {
                 for tab in &self.tabs {
-                    run!("{} {}", &browser, tab);
+                    process::Command::new(&browser)
+                        .arg(tab)
+                        .stdin(Stdio::null())
+                        .stdout(Stdio::null())
+                        .stderr(Stdio::null())
+                        .spawn()
+                        .unwrap();
                 }
             } else {
-                error!("Please set $BROWSER to open browser tabs.")
+                error!("Please set $BROWSER to open browser tabs")
             }
         }
     }
