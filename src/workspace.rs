@@ -42,14 +42,18 @@ impl Workspace {
         if !self.commands.external.is_empty() {
             if let Ok(terminal) = env::var("TERMINAL") {
                 for command in &self.commands.external {
-                    process::Command::new(&terminal)
+                    let result = process::Command::new(&terminal)
                         .arg(command)
                         .current_dir(&self.path)
                         .stdin(Stdio::null())
                         .stdout(Stdio::null())
                         .stderr(Stdio::null())
-                        .spawn()
-                        .unwrap();
+                        .spawn();
+
+                    if result.is_err() {
+                        error!("Could not run command: {}", command);
+                        log!("{}", result.unwrap_err());
+                    }
                 }
             } else {
                 error!("Please set $TERMINAL to run external commands");
@@ -59,13 +63,17 @@ impl Workspace {
         if !self.tabs.is_empty() {
             if let Ok(browser) = env::var("BROWSER") {
                 for tab in &self.tabs {
-                    process::Command::new(&browser)
+                    let result = process::Command::new(&browser)
                         .arg(tab)
                         .stdin(Stdio::null())
                         .stdout(Stdio::null())
                         .stderr(Stdio::null())
-                        .spawn()
-                        .unwrap();
+                        .spawn();
+
+                    if result.is_err() {
+                        error!("Could not open tab: {}", tab);
+                        log!("{}", result.unwrap_err())
+                    }
                 }
             } else {
                 error!("Please set $BROWSER to open browser tabs")
