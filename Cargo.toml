@@ -1,6 +1,6 @@
 [package]
 name = "workspace"
-description = "a command-line project manager to automate repetitive tasks"
+description = "a command-line project manager"
 version = "0.2.2"
 authors = ["Matthias Totschnig <matthias@totschnig.org>","Roma Bhattacharjee <roma0615@gmail.com>"]
 repository = "https://github.com/matthias-t/workspace"

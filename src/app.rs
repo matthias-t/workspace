@@ -3,7 +3,7 @@ use clap::*;
 pub fn cli() -> App<'static, 'static> {
     App::new("workspace")
         .version("0.2.2")
-        .about("A command-line project manager to automate repetitive tasks")
+        .about("A command-line project manager")
         .author("Matthias T. and Roma B.")
         .setting(AppSettings::ArgRequiredElseHelp)
         .global_setting(AppSettings::ColoredHelp)
