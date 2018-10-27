@@ -20,7 +20,7 @@ macro_rules! indent_error {
 // Dependencies: colored::Colorize
 macro_rules! warn {
     ($message:expr$(,$arg:expr)*) => {
-        println!(concat!("{} ", $message), "warning:".yellow().bold()$(, $arg)*);
+        eprintln!(concat!("{} ", $message), "warning:".yellow().bold()$(, $arg)*);
     };
 }
 
