@@ -5,11 +5,11 @@ pub const BASH: &str = r#"function ws {
         else
             echo "$line";
         fi;
-    done < <( workspace "$@" );
+    done < <( workspace --from-shell-wrapper "$@" );
 }"#;
 
 pub const FISH: &str = r#"function ws
-    workspace $argv | while read line
+    workspace --from-shell-wrapper $argv | while read line
         if set command (string replace -r "^RUN>" "" $line)
             eval $command < /dev/tty
         else
@@ -19,7 +19,7 @@ pub const FISH: &str = r#"function ws
 end"#;
 
 pub const POWERSHELL: &str = r#"function ws {
-    workspace $args | % {
+    workspace --from-shell-wrapper $args | % {
         if ($_ -match "^RUN>") {
             . ([scriptblock]::Create($_.Substring(4)))
         } else {
@@ -29,7 +29,7 @@ pub const POWERSHELL: &str = r#"function ws {
 }"#;
 
 pub const CMD: &str = r#"@ECHO off
-FOR /F "tokens=* delims=" %%G IN ('workspace %*') DO (
+FOR /F "tokens=* delims=" %%G IN ('workspace --from-shell-wrapper %*') DO (
     CALL :subroutine "%%G"
 )
 GOTO :EOF

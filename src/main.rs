@@ -35,6 +35,13 @@ fn main() {
         VERBOSE = matches.is_present("verbose");
     }
 
+    if !matches.is_present("shell-wrapper") && !matches.subcommand_matches("shell").is_some() {
+        warn!("The workspace binary is the backend for the `ws` function.");
+        indent_warn!(
+            "To set it up in your shell, see the README.md or run 'workspace shell --help'"
+        )
+    }
+
     if let Some(matches) = matches.subcommand_matches("open") {
         let name: &str = matches.value_of("NAME").unwrap();
         let result = Workspace::get(name)

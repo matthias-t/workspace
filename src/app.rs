@@ -14,6 +14,11 @@ pub fn cli() -> App<'static, 'static> {
                 .short("v")
                 .help("Causes verbose output to be logged"),
         )
+        .arg(
+            Arg::with_name("shell-wrapper")
+                .long("--from-shell-wrapper")
+                .hidden(true)
+        )
         .subcommand(
             SubCommand::with_name("open")
                 .about("Opens a workspace")
