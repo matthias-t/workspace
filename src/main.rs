@@ -139,7 +139,7 @@ fn main() {
     } else if let Some(_matches) = matches.subcommand_matches("list") {
         let all = Workspace::all();
         if all.is_empty() {
-            println!("No existing workspaces.\nRun `workspace add <NAME>` to create one.");
+            println!("No existing workspaces.\nRun `ws add <NAME>` to create one.");
             return;
         }
 
