@@ -24,6 +24,12 @@ macro_rules! warn {
     };
 }
 
+macro_rules! indent_warn {
+    ($message:expr$(,$arg:expr)*) => {
+        eprintln!(concat!("         ", $message)$(, $arg)*);
+    };
+}
+
 // Dependencies: VERBOSE: bool, colored::Colorize
 macro_rules! log {
     ($message:expr$(,$arg:expr)*) => {
