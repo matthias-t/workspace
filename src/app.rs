@@ -5,7 +5,7 @@ pub fn cli() -> App<'static, 'static> {
         .version("0.3.0")
         .about("A command-line project manager")
         .author("Matthias T. and Roma B.")
-        .setting(AppSettings::ArgRequiredElseHelp)
+        .setting(AppSettings::SubcommandRequiredElseHelp)
         .global_setting(AppSettings::ColoredHelp)
         .global_setting(AppSettings::ColorAlways)
         .arg(
