@@ -6,6 +6,7 @@ authors = ["Matthias Totschnig <matthias@totschnig.org>","Roma Bhattacharjee <ro
 repository = "https://github.com/matthias-t/workspace"
 license = "MIT"
 readme = "README.md"
+edition = "2018"
 
 [dependencies]
 clap = "2.32.0"

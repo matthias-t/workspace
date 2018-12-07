@@ -1,16 +1,16 @@
-extern crate dirs;
-extern crate serde;
-extern crate toml;
+use crate::exit::Exit;
+use crate::tilde::Tilde;
+use crate::VERBOSE;
 
-use super::exit::Exit;
-use super::tilde::Tilde;
-use super::VERBOSE;
-use colored::*;
 use std::env;
 use std::fs;
 use std::io::{self, Read, Write};
 use std::path::PathBuf;
 use std::process::{self, Stdio};
+
+use colored::Colorize;
+use failure::Fail;
+use serde_derive::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Workspace {

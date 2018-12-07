@@ -1,5 +1,3 @@
-extern crate dirs;
-
 use std::path::PathBuf;
 
 pub trait Tilde {

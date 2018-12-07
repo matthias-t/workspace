@@ -1,7 +1,7 @@
-use colored::*;
+use colored::Colorize;
+use crate::VERBOSE;
 use std::fmt::Display;
 use std::process;
-use VERBOSE;
 
 pub trait Exit<T> {
     fn unwrap_or_exit(self, message: &str) -> T;

@@ -1,30 +1,24 @@
 #[macro_use]
-pub mod macros;
+mod macros;
 mod app;
-pub mod exit;
+mod exit;
 mod shell;
 mod tilde;
 mod workspace;
 
-extern crate clap;
-extern crate colored;
-#[macro_use]
-extern crate failure;
-extern crate term_grid;
-#[macro_use]
-extern crate serde_derive;
-
 use clap::ArgMatches;
-use colored::*;
-use exit::*;
+use colored::Colorize;
 use failure::Fail;
+
 use std::env;
 use std::fs;
 use std::io::Write;
 use std::path;
 use std::process;
-use tilde::Tilde;
-use workspace::Workspace;
+
+use crate::exit::Exit;
+use crate::tilde::Tilde;
+use crate::workspace::Workspace;
 
 pub static mut VERBOSE: bool = false;
 
@@ -199,7 +193,7 @@ fn main() {
             } else if matches.subcommand_matches("powershell").is_some() {
                 println!("{}", shell::POWERSHELL)
             } else if let Some(matches) = matches.subcommand_matches("cmd") {
-                let mut path: path::PathBuf = path_to_binary_or_arg(&matches);
+                let path: path::PathBuf = path_to_binary_or_arg(&matches);
                 let mut file: fs::File = fs::OpenOptions::new()
                     .read(false)
                     .write(true)
