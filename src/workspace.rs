@@ -12,6 +12,7 @@ use colored::Colorize;
 use failure::Fail;
 use serde_derive::{Deserialize, Serialize};
 
+#[serde(deny_unknown_fields)]
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Workspace {
     pub path: PathBuf,
