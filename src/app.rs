@@ -2,9 +2,8 @@ use clap::*;
 
 pub fn cli() -> App<'static, 'static> {
     App::new("workspace")
-        .version("0.3.0")
+        .version(crate_version!())
         .about("A command-line project manager")
-        .author("Matthias T. and Roma B.")
         .setting(AppSettings::SubcommandRequiredElseHelp)
         .global_setting(AppSettings::ColoredHelp)
         .global_setting(AppSettings::ColorAlways)
