@@ -79,7 +79,8 @@ fn main() {
                         }
                     }
                     None
-                }).collect();
+                })
+                .collect();
 
             if !sames.is_empty() {
                 warn!(
@@ -130,7 +131,8 @@ fn main() {
             std::fs::rename(
                 Workspace::file_path(old_name),
                 Workspace::file_path(new_name),
-            ).unwrap_or_exit("Could not rename config file");
+            )
+            .unwrap_or_exit("Could not rename config file");
         }
 
         ("delete", Some(matches)) => {

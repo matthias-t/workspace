@@ -1,5 +1,5 @@
-use colored::Colorize;
 use crate::VERBOSE;
+use colored::Colorize;
 use std::fmt::Display;
 use std::process;
 

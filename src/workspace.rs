@@ -15,19 +15,19 @@ use serde_derive::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Workspace {
     pub path: PathBuf,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "is_default")]
     pub tabs: Vec<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "is_default")]
     pub commands: Commands,
 }
 
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Debug, Default, PartialEq)]
 pub struct Commands {
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "is_default")]
     pub local: Vec<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "is_default")]
     pub external: Vec<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "is_default")]
     pub background: Vec<String>,
 }
 
@@ -155,7 +155,8 @@ impl Workspace {
                 // Safe to unwrap here, because paths() cannot contain a file without a stem
                 let name = path.file_stem().unwrap().to_str().map(str::to_owned);
                 (name, path)
-            }).map(|(name, path)| (name, Self::parse(&path)))
+            })
+            .map(|(name, path)| (name, Self::parse(&path)))
             .collect()
     }
 
@@ -255,4 +256,8 @@ impl From<serde_yaml::Error> for Error {
     fn from(cause: serde_yaml::Error) -> Error {
         Error::Parse(cause)
     }
+}
+
+fn is_default<T: Default + PartialEq>(t: &T) -> bool {
+    t == &T::default()
 }
