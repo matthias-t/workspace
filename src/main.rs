@@ -30,9 +30,9 @@ fn main() {
     }
 
     if !matches.is_present("shell-wrapper") && matches.subcommand_matches("shell").is_none() {
-        warn!("The workspace binary is the backend for the `ws` function.");
+        warn!("You are using the workspace binary, which is the backend for the `ws` function.");
         indent_warn!(
-            "To set it up in your shell, see the README.md or run 'workspace shell --help'"
+            "To set `ws` up in your shell, see the README.md or run `workspace shell --help`"
         )
     }
 
@@ -153,7 +153,7 @@ fn main() {
         ("list", Some(_)) => {
             let all = Workspace::all();
             if all.is_empty() {
-                println!("No existing workspaces.\nRun `ws add <NAME>` to create one.");
+                eprintln!("No workspaces found.\nRun `ws add <NAME>` to create one.");
                 return;
             }
 

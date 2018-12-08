@@ -55,6 +55,7 @@ pub fn cli() -> App<'static, 'static> {
         )
         .subcommand(
             SubCommand::with_name("rename")
+                .alias("mv")
                 .about("Renames a workspace")
                 .arg(
                     Arg::with_name("OLD_NAME")
@@ -71,7 +72,7 @@ pub fn cli() -> App<'static, 'static> {
             SubCommand::with_name("delete")
                 .alias("remove")
                 .alias("rm")
-                .about("Deletes a specified workspace, if present")
+                .about("Deletes a workspace")
                 .arg(
                     Arg::with_name("NAME")
                         .help("Name of the workspace to delete")
@@ -87,11 +88,11 @@ pub fn cli() -> App<'static, 'static> {
         .subcommand(
             SubCommand::with_name("list")
                 .alias("ls")
-                .about("Lists all existing workspaces"),
+                .about("Lists all workspaces"),
         )
         .subcommand({
             SubCommand::with_name("shell")
-                .about("Sets up workspace in your shell")
+                .about("Sets up `ws` in your shell")
                 .setting(AppSettings::ArgRequiredElseHelp)
                 .subcommand(
                     SubCommand::with_name("bash")
