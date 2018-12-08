@@ -117,7 +117,7 @@ impl Workspace {
             .open(path)
             .unwrap_or_exit(ERR_MESSAGE);
 
-        let serialized = toml::to_string(self).unwrap();
+        let serialized = serde_yaml::to_string(self).unwrap();
         file.write_fmt(format_args!("{}", serialized))
             .unwrap_or_exit(ERR_MESSAGE);
     }
@@ -161,7 +161,7 @@ impl Workspace {
 
     fn parse(path: &PathBuf) -> Result<Workspace, Error> {
         let content: String = Self::read(&path)?;
-        let ws: Workspace = toml::from_str(&content)?;
+        let ws: Workspace = serde_yaml::from_str(&content)?;
         Ok(ws)
     }
 
@@ -202,9 +202,9 @@ impl Workspace {
             );
             let extension = path.extension().unwrap();
             skip!(
-                extension.to_string_lossy() != "toml",
+                extension.to_string_lossy() != "yaml",
                 format!(
-                    "Skipping {} because it's not a TOML file",
+                    "Skipping {} because it's not a YAML file",
                     path.tilde_format()
                 )
             );
@@ -218,7 +218,7 @@ impl Workspace {
     pub fn file_path(name: &str) -> PathBuf {
         let mut path = Self::folder_path();
         path.push(name);
-        path.set_extension("toml");
+        path.set_extension("yaml");
         path
     }
 
@@ -242,7 +242,7 @@ pub enum Error {
     #[fail(display = "Could not read workspace data")]
     Read(#[cause] io::Error),
     #[fail(display = "Could not parse workspace data")]
-    Parse(#[cause] toml::de::Error),
+    Parse(#[cause] serde_yaml::Error),
 }
 
 impl From<io::Error> for Error {
@@ -251,8 +251,8 @@ impl From<io::Error> for Error {
     }
 }
 
-impl From<toml::de::Error> for Error {
-    fn from(cause: toml::de::Error) -> Error {
+impl From<serde_yaml::Error> for Error {
+    fn from(cause: serde_yaml::Error) -> Error {
         Error::Parse(cause)
     }
 }

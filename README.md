@@ -1,6 +1,6 @@
 # workspace [![Build Status](https://travis-ci.com/matthias-t/workspace.svg?branch=master)](https://travis-ci.com/matthias-t/workspace)
 
-`ws` is a CLI to manage and interpret small TOML files that specify tasks to open a project, like opening an editor, launching a server or visiting slack or documentation in the browser. For example, it can be used to efficiently switch between work and side projects.
+`ws` is a CLI to manage and interpret small YAML files that specify tasks to open a project, like opening an editor, launching a server or visiting slack or documentation in the browser. For example, it can be used to efficiently switch between work and side projects.
 
 ## Installation
 
