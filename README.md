@@ -1,6 +1,6 @@
 # workspace [![Build Status](https://travis-ci.com/matthias-t/workspace.svg?branch=master)](https://travis-ci.com/matthias-t/workspace)
 
-`ws` is a CLI to manage and interpret small YAML files that specify tasks to open a project, like opening an editor, launching a server or visiting slack or documentation in the browser. For example, it can be used to efficiently switch between work and side projects.
+`ws` is a CLI to manage and interpret small YAML files that specify tasks to open a project like opening an editor, launching a server or visiting a chat or documentation in the browser. It can be used to efficiently switch between work and side projects.
 
 ## Installation
 
@@ -24,11 +24,39 @@ Then setup the `ws` command in your shell:
 
 ## Documentation
 
+For the CLI, see:
 ```
 ws --help
 ```
 
-More documentation is coming about the format of workspace files when it becomes more stable. For now, use the outline created by `ws add`.
+Workspaces are YAML files. They can have the following fields:
+- `path`, string: path to the workspace
+- `tabs`, list of strings: tabs to open in `$BROWSER`
+- `commands`, table
+  - `local`, list of strings: commands to be ran in the current shell
+  - `background`, list of strings: commands to be ran in a new background process
+  - `external`, list of strings: commands to be ran in a new `$TERMINAL`
+
+> Note: `path` is mandatory and created automatically by `ws new`
+
+For example, this is the workspace I use for my blog:
+```
+path: /home/matthias/code/web/blog/
+
+tabs:
+- https://developer.mozilla.org/en-US/
+- localhost
+
+commands:
+  local:
+  - git status
+  background:
+  - sudo systemctl start nginx
+  - code -r .
+  external:
+  - gulp
+```
+It will `cd` into `~/code/web/blog/`, print the git status, open the directory in visual studio code, start the `gulp` build in a new terminal, launch `nginx` to serve the files and open `localhost` and MDN in the browser.
 
 ## FAQ
 
