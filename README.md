@@ -39,12 +39,12 @@ Workspaces can have the following fields:
 - `tabs`, list of strings <br>
   tabs to open in `$BROWSER`
 - `commands`, table
-  - `local`, list of strings <br>
-    commands execute in the current shell
-  - `background`, list of strings <br>
-    commands execute as background processes
-  - `external`, list of strings <br>
-    commands to execute in a new `$TERMINAL`
+    - `local`, list of strings <br>
+      commands execute in the current shell
+    - `background`, list of strings <br>
+      commands execute as background processes
+    - `external`, list of strings <br>
+      commands to execute in a new `$TERMINAL`
 
 > Note: `path` is mandatory and created automatically by `ws new`
 
