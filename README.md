@@ -22,6 +22,8 @@ Then setup the `ws` command in your shell:
   Invoke-Expression "$(workspace shell posh)"
   ```
 
+> `workspace shell` prints a shell function `ws` that delegates output from `workspace` but intercepts commands to run. This lets you change the directory and run commands directly in the shell, e.g. if they need user input.
+
 ## Documentation
 
 For the CLI, see:
@@ -29,13 +31,18 @@ For the CLI, see:
 ws --help
 ```
 
-Workspaces are YAML files. They can have the following fields:
-- `path`, string: path to the workspace
-- `tabs`, list of strings: tabs to open in `$BROWSER`
+Workspaces can have the following fields:
+- `path`, list of strings <br>
+  path to the workspace
+- `tabs`, list of strings <br>
+  tabs to open in `$BROWSER`
 - `commands`, table
-  - `local`, list of strings: commands to be ran in the current shell
-  - `background`, list of strings: commands to be ran in a new background process
-  - `external`, list of strings: commands to be ran in a new `$TERMINAL`
+  - `local`, list of strings <br>
+    commands execute in the current shell
+  - `background`, list of strings <br>
+    commands execute as background processes
+  - `external`, list of strings <br>
+    commands to execute in a new `$TERMINAL`
 
 > Note: `path` is mandatory and created automatically by `ws new`
 
@@ -43,31 +50,17 @@ For example, this is the workspace I use for my blog:
 ```
 path: /home/matthias/code/web/blog/
 
-tabs:
-- https://developer.mozilla.org/en-US/
-- localhost
-
 commands:
   local:
   - git status
-  background:
   - sudo systemctl start nginx
+  background:
   - code -r .
   external:
   - gulp
+
+tabs:
+- https://developer.mozilla.org/en-US/
+- localhost
 ```
 It will `cd` into `~/code/web/blog/`, print the git status, open the directory in visual studio code, start the `gulp` build in a new terminal, launch `nginx` to serve the files and open `localhost` and MDN in the browser.
-
-## FAQ
-
-> Should I use `workspace` or `ws`?
-
-Use `ws`. `workspace` is the binary that powers the `ws` function and sets it up in your shell configuration.
-
-> Why do I need to add something to my shell configuration?
-
-Otherwise workspace can't change your working directory or run commands that you specify for a workspace directly in the shell process.
-
-> I don't trust you
-
-That's not technically a question. But the good thing is: you don't need to. If you run `workspace shell ...` you can see what you are invoking. Or you could just take a look at the code.
