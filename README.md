@@ -9,6 +9,7 @@ cargo install workspace
 ```
 
 Then setup the `ws` command in your shell:
+
 - **bash**: Add this line to your `.bashrc`
   ```bash
   eval $(workspace shell bash)
@@ -32,6 +33,7 @@ ws --help
 ```
 
 Workspaces can have the following fields:
+
 - `path`, list of strings <br>
   path to the workspace
 - `tabs`, list of strings <br>
