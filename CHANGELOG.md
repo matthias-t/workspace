@@ -1,3 +1,7 @@
+### [`0.4.1`](https://github.com/matthias-t/workspace/commit/48bd22e8079f0ea32a0a3127c37294c1fd9bab51)
+- small style changes
+- improve the `README.md`
+
 ### [`0.4.0`](https://github.com/matthias-t/workspace/commit/48bd22e8079f0ea32a0a3127c37294c1fd9bab51)
 - switch to `YAML`
 - add documentation about workspace format
@@ -7,6 +11,7 @@
 - print warnings to `stderr`
 - show a warning when the binary is used directly
 - improve code style, modernize imports
+- keep a `CHANGELOG.md`
 
 ### [`0.3.0`](https://github.com/matthias-t/workspace/commit/7b09d1948816439b7c598f92dc0535f0b2ab101a)
 - instead of the shell wrappers, `std::process` is now used to open tabs or run commands in a new terminal
