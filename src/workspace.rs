@@ -142,10 +142,10 @@ impl Workspace {
 
     pub fn get(name: &str) -> Option<Result<Workspace, Error>> {
         let path = Self::file_path(name);
-        if !path.exists() {
-            None
-        } else {
+        if path.exists() {
             Some(Self::parse(&path))
+        } else {
+            None
         }
     }
 
