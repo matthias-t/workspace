@@ -1,4 +1,5 @@
-# workspace [![Build Status](https://travis-ci.com/matthias-t/workspace.svg?branch=master)](https://travis-ci.com/matthias-t/workspace)
+[![build status](https://travis-ci.com/matthias-t/workspace.svg?branch=master)](https://travis-ci.com/matthias-t/workspace)
+[![crates.io](https://img.shields.io/crates/v/workspace.svg)](https://crates.io/crates/workspace)
 
 `ws` is a CLI to manage and interpret small YAML files that specify tasks to open a project like opening an editor, launching a server or visiting a chat or documentation in the browser. It can be used to efficiently switch between work and side projects.
 
