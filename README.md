@@ -10,18 +10,23 @@ cargo install workspace
 
 Then setup the `ws` command in your shell:
 
-- **bash**: Add this line to your `.bashrc`
-  ```bash
-  eval $(workspace shell bash)
-  ```
-- **fish**: Add this line to your `config.fish`
-  ```fish
-  workspace shell fish | source
-  ```
-- **PowerShell**: Add this line to your `profile.ps1`
-  ```powershell
-  Invoke-Expression "$(workspace shell posh)"
-  ```
+-   **bash**: Add this line to your `.bashrc`
+
+    ```bash
+    eval $(workspace shell bash)
+    ```
+
+-   **fish**: Add this line to your `config.fish`
+
+    ```fish
+    workspace shell fish | source
+    ```
+
+-   **PowerShell**: Add this line to your `profile.ps1`
+
+    ```powershell
+    Invoke-Expression "$(workspace shell posh)"
+    ```
 
 > `workspace shell` prints a shell function `ws` that delegates output from `workspace` but intercepts commands to run. This lets you change the directory and run commands directly in the shell, e.g. if they need user input.
 
@@ -34,17 +39,27 @@ ws --help
 
 Workspaces can have the following fields:
 
-- `path`, list of strings <br>
-  path to the workspace
-- `tabs`, list of strings <br>
-  tabs to open in `$BROWSER`
-- `commands`, table
-    - `local`, list of strings <br>
-      commands execute in the current shell
-    - `background`, list of strings <br>
-      commands execute as background processes
-    - `external`, list of strings <br>
-      commands to execute in a new `$TERMINAL`
+-   `path`, list of strings
+
+     path to the workspace
+
+-   `tabs`, list of strings
+
+     tabs to open in `$BROWSER`
+
+-    `commands`, table
+
+    -   `local`, list of strings
+
+        commands execute in the current shell
+
+    -   `background`, list of strings
+
+        commands execute as background processes
+
+    -   `external`, list of strings
+
+        commands to execute in a new `$TERMINAL`
 
 > Note: `path` is mandatory and created automatically by `ws new`
 
@@ -65,4 +80,7 @@ tabs:
 - https://developer.mozilla.org/en-US/
 - localhost
 ```
-It will `cd` into `~/code/web/blog/`, print the git status, open the directory in visual studio code, start the `gulp` build in a new terminal, launch `nginx` to serve the files and open `localhost` and MDN in the browser.
+
+It will `cd` into `~/code/web/blog/`, print the git status, open the directory
+in visual studio code, start the `gulp` build in a new terminal, launch `nginx`
+to serve the files and open `localhost` and MDN in the browser.
