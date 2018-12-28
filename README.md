@@ -1,9 +1,8 @@
-[![build status](https://travis-ci.com/matthias-t/workspace.svg?branch=master)](https://travis-ci.com/matthias-t/workspace)
-[![crates.io](https://img.shields.io/crates/v/workspace.svg)](https://crates.io/crates/workspace)
+## workspace [![build status](https://travis-ci.com/matthias-t/workspace.svg?branch=master)](https://travis-ci.com/matthias-t/workspace) [![crates.io](https://img.shields.io/crates/v/workspace.svg)](https://crates.io/crates/workspace)
 
 `ws` is a CLI to manage and interpret small YAML files that specify tasks to open a project like opening an editor, launching a server or visiting a chat or documentation in the browser. It can be used to efficiently switch between work and side projects.
 
-## Installation
+### Installation
 
 ```bash
 cargo install workspace
@@ -31,7 +30,7 @@ Then setup the `ws` command in your shell:
 
 > `workspace shell` prints a shell function `ws` that delegates output from `workspace` but intercepts commands to run. This lets you change the directory and run commands directly in the shell, e.g. if they need user input.
 
-## Documentation
+### Documentation
 
 For the CLI, see:
 ```
@@ -52,11 +51,11 @@ Workspaces can have the following fields:
 
     -   `local`, list of strings
 
-        commands execute in the current shell
+        commands to execute in the current shell
 
     -   `background`, list of strings
 
-        commands execute as background processes
+        commands to execute as background processes
 
     -   `external`, list of strings
 
