@@ -19,7 +19,7 @@ Then setup the `ws` command in your shell:
 -   **fish**: Add this line to your `config.fish`
 
     ```fish
-    workspace shell fish | source
+    workspace shell fish | source -
     ```
 
 -   **PowerShell**: Add this line to your `profile.ps1`
