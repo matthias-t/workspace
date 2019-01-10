@@ -49,17 +49,17 @@ Workspaces can have the following fields:
 
 -    `commands`, table
 
-    -   `local`, list of strings
+     -   `local`, list of strings
 
-        commands to execute in the current shell
+         commands to execute in the current shell
 
-    -   `background`, list of strings
+     -   `background`, list of strings
 
-        commands to execute as background processes
+         commands to execute as background processes
 
-    -   `external`, list of strings
+     -   `external`, list of strings
 
-        commands to execute in a new `$TERMINAL`
+         commands to execute in a new `$TERMINAL`
 
 > Note: `path` is mandatory and created automatically by `ws new`
 
