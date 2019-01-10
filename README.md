@@ -64,6 +64,7 @@ Workspaces can have the following fields:
 > Note: `path` is mandatory and created automatically by `ws new`
 
 For example, this is the workspace I use for my blog:
+
 ```
 path: /home/matthias/code/web/blog/
 
